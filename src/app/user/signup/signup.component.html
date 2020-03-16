@@ -1,0 +1,111 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
+    <a class="navbar-brand font-weight-bold" href="#">ToDo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <div class="navbar-nav ml-auto">
+            <a class="nav-item nav-link active" [routerLink]="['/signin']">SignIn <span
+                    class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav><br>
+<!-- end of navbar -->
+<br>
+
+<!-- container for signup form -->
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <!-- beginning of signup form -->
+            <form class="border p-2">
+                <!-- firstName -->
+                <div class="form-group">
+                    <label for="inputFirstName" class="sr-only">FirstName</label>
+                    <input type="text" class="form-control" id="inputFirstName" name="firstName" [(ngModel)]="firstName"
+                        placeholder="FirstName" required #inputFirstName="ngModel" autofocus>
+
+                    <!-- firstName validation -->
+                    <div *ngIf="inputFirstName.invalid && (inputFirstName.dirty||inputFirstName.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="inputFirstName.errors.required">
+                            FirstName is required
+                        </div>
+                    </div>
+                    <!-- end of firstName validation -->
+                </div>
+
+                <!-- LastName -->
+                <div class="form-group">
+                    <label for="inputLastName" class="sr-only">LastName</label>
+                    <input type="text" class="form-control" id="inputLastName" name="lastName" [(ngModel)]="lastName"
+                        placeholder="LastName" required>
+                </div>
+
+                <!-- choosing country -->
+                <div class="form-group">
+                    <select [(ngModel)]="country" #Country="ngModel" name="country" class="form-control"
+                        id="inputCountry" (click)="onChangeOfCountry()" required>
+                        <option value="">Select</option>
+                        <option *ngFor="let country of countries" [value]="country.code">{{country.name}}</option>
+                    </select>
+                </div>
+
+
+                <!-- mobileNumber -->
+                <div class="form-group">
+                    <div class="input-group-prepend">
+                        <span *ngIf="countryCode" class="input-group-text" id="numberCode">+{{countryCode}}</span>
+
+                        <input type="number" class="form-control" [(ngModel)]="mobileNumber" name="mobileNumber"
+                            placeholder="MobileNumber" aria-describedby="numberCode" required>
+                    </div>
+
+                </div>
+
+                <!-- email -->
+                <div class="form-group">
+                    <label for="inputEmail" class="sr-only">Email address</label>
+                    <input type="email" class="form-control" id="inputEmail" [(ngModel)]="email" name="email"
+                        aria-describedby="emailHelp" placeholder="Email" #inputEmail="ngModel" required>
+                    <small id="emailHelp" class="form-text text-muted">Your email will never be shared.</small>
+
+                    <!-- email validation -->
+                    <div *ngIf="inputEmail.invalid && (inputEmail.dirty||inputEmail.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="inputEmail.errors.required">
+                            Email is required
+                        </div>
+                    </div>
+                    <!-- end of email validation -->
+                </div>
+
+                <!-- password -->
+                <div class="form-group">
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" class="form-control" id="inputPassword" [(ngModel)]="password"
+                        name="password" #inputPassword="ngModel" placeholder="Password" minlength="8"
+                        (keydown)="signUpUsingKeyPress($event)" required>
+
+                    <!-- password validation -->
+                    <div *ngIf="inputPassword.invalid && (inputPassword.dirty || inputPassword.touched)"
+                        class="alert alert-danger">
+
+                        <div *ngIf="inputPassword.errors.required">
+                            Password is required.
+                        </div>
+                        <div *ngIf="inputPassword.errors.minlength">
+                            Password must be at least 8 characters long.
+                        </div>
+                    </div>
+                    <!-- password validation end -->
+                </div>
+
+                <button type="button" (click)="signUp()" class="btn btn-info">Sign Up</button>
+            </form>
+            <!-- end of signup form -->
+        </div>
+    </div>
+</div>

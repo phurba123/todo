@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
+    <a class="navbar-brand font-weight-bold" href="#">ToDo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <div class="navbar-nav ml-auto">
+            <a class="nav-item nav-link active" [routerLink]="['/signup']">SignUp <span class="sr-only">(current)
+                </span></a>
+        </div>
+    </div>
+</nav>
+<br>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <form class="border p-2">
+                <h3 class="text-center text-info">Sign in to continue</h3><br>
+
+                <!-- div for email input -->
+                <div class="form-group">
+                    <label for="emailInput" class="sr-only">Email</label>
+                    <input type="email" id="emailInput" class="form-control" placeholder="Email" required autofocus>
+                </div>
+                <!-- end of email input -->
+
+                <!-- div for password input -->
+                <div class="form-group">
+                    <label for="passwordInput" class="sr-only">password</label>
+                    <input type="password" id="passwordInput" class="form-control" placeholder="Password">
+                </div>
+                <!-- end of password input -->
+                <br>
+
+                <div class="row no-gutters justify-content-between">
+                    <button class="btn btn-info">Sign In</button>
+                    <a class="btn"> <small class="align-self-end text-muted">Forgot password?</small></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
