@@ -16,27 +16,48 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <form class="border p-2">
+            <form class="border rounded p-2">
                 <h3 class="text-center text-info">Sign in to continue</h3><br>
 
                 <!-- div for email input -->
                 <div class="form-group">
                     <label for="emailInput" class="sr-only">Email</label>
-                    <input type="email" id="emailInput" class="form-control" placeholder="Email" required autofocus>
+                    <input type="email" id="emailInput" class="form-control" placeholder="Email" required autofocus
+                        [(ngModel)]="email" name="email" #emailInput="ngModel">
                 </div>
+                <!-- email validation -->
+                <div *ngIf="emailInput.invalid && (emailInput.dirty||emailInput.touched)" class="alert alert-danger">
+                    <div *ngIf="emailInput.errors.required">
+                        Email is required
+                    </div>
+                </div>
+                <!-- end of email validation -->
                 <!-- end of email input -->
 
                 <!-- div for password input -->
                 <div class="form-group">
                     <label for="passwordInput" class="sr-only">password</label>
-                    <input type="password" id="passwordInput" class="form-control" placeholder="Password">
+                    <input type="password" id="passwordInput" class="form-control" placeholder="Password"
+                        (keydown)="signInUsingKeyPress($event)" [(ngModel)]="password" name="password" required
+                        #inputPassword="ngModel">
                 </div>
+
+                <!-- password validation -->
+                <div *ngIf="inputPassword.invalid && (inputPassword.dirty || inputPassword.touched)"
+                    class="alert alert-danger">
+
+                    <div *ngIf="inputPassword.errors.required">
+                        Password is required.
+                    </div>
+                </div>
+                <!-- password validation end -->
                 <!-- end of password input -->
                 <br>
 
                 <div class="row no-gutters justify-content-between">
-                    <button class="btn btn-info">Sign In</button>
-                    <a class="btn"> <small class="align-self-end text-muted">Forgot password?</small></a>
+                    <button class="btn btn-info" (click)="signIn()">Sign In</button>
+                    <a class="btn" [routerLink]="['/forgotpassword']" title="recover password">
+                        <small class="align-self-end text-muted">Forgot password?</small></a>
                 </div>
             </form>
         </div>
