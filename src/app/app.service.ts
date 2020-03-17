@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpParams } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 
 @Injectable({
   providedIn: 'root'
@@ -17,24 +17,25 @@ export class AppService {
   //signup
   public signUp(data) {
     const params = new HttpParams()
-    .set('firstName',data.firstName)
-    .set('lastName',data.lastName)
-    .set('email',data.email)
-    .set('password',data.password)
-    .set('mobileNumber',data.mobileNumber)
-    .set('countryName',data.countryName)
+      .set('firstName', data.firstName)
+      .set('lastName', data.lastName)
+      .set('email', data.email)
+      .set('password', data.password)
+      .set('mobileNumber', data.mobileNumber)
+      .set('countryName', data.countryName)
     return this.http.post(`${this.userBackendUrl}/signup`, params);
   }//end of signup
 
   //signIn
-  public signIn(data)
-  {
+  public signIn(data) {
     const params = new HttpParams()
-    .set('email',data.email)
-    .set('password',data.password)
+      .set('email', data.email)
+      .set('password', data.password)
 
-    return this.http.post(`${this.userBackendUrl}/signin`,params)
-  }
+    return this.http.post(`${this.userBackendUrl}/signin`, params);
+  }//end of signIn
+
+
 
   /**Countries related service*/
 

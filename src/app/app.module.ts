@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { UserModule } from './user/user.module';
 import { HttpClientModule } from '@angular/common/http'
 import { ToastrModule } from 'ngx-toastr'
+import { DashboardModule } from './dashboard/dashboard.module';
+import {CookieService} from 'ngx-cookie-service'
+import { ListService } from './list.service';
 
 @NgModule({
   declarations: [
@@ -16,6 +19,7 @@ import { ToastrModule } from 'ngx-toastr'
     AppRoutingModule,
     BrowserAnimationsModule,
     UserModule,
+    DashboardModule,
     HttpClientModule,
     ToastrModule.forRoot({
       timeOut: 1500,
@@ -23,7 +27,7 @@ import { ToastrModule } from 'ngx-toastr'
       preventDuplicates: true,
     })
   ],
-  providers: [],
+  providers: [CookieService,ListService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

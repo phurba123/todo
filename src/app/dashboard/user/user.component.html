@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
+    <a class="navbar-brand font-weight-bold">ToDo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" [routerLink]="['/user']">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Friends</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!-- end of navigation -->
+
+<div class="container-fluid mt-1">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- button for adding new list -->
+            <button type="button" class="btn btn-info btn-circle" title="add new list" data-toggle="collapse"
+                data-target="#inputNewList" aria-expanded="false" aria-controls="inputNewList">
+                <i class="fas fa-plus"></i></button>
+            <p class="mt-2">Your list of ToDo's</p>
+
+            <ul class="list-unstyled" id="todoScroller">
+
+                <!-- input for adding new list  -->
+                <div class="row collapse no-gutters" id="inputNewList">
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="new List" [(ngModel)]="newListTitle"
+                        name="newListTitle">
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-info ml-1" (click)="addNewList()">Add</button>
+                    </div>
+                </div>
+                <!-- end of adding new list -->
+
+                <!-- showing all list of todo's -->
+                <li *ngFor='let list of allList'>
+
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>

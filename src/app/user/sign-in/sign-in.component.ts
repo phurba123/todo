@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/app.service';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-sign-in',
@@ -14,7 +16,9 @@ export class SignInComponent implements OnInit {
 
   constructor(
     private toastr:ToastrService,
-    private appService : AppService
+    private appService : AppService,
+    private router:Router,
+    private cookie:CookieService
   ) { }
 
   ngOnInit() {
@@ -41,9 +45,18 @@ export class SignInComponent implements OnInit {
 
       this.appService.signIn(data).subscribe((apiResponse)=>
       {
+        //console.log(apiResponse)
         if(apiResponse['status']===200)
         {
-          this.toastr.success('SignIn success')
+          this.toastr.success('SignIn success');
+
+          //set authToken to cookie
+          this.cookie.set('token',apiResponse['data']['authToken'])
+          //on successfull sign in ,navigate to user dashboard
+          setTimeout(()=>
+          {
+            this.router.navigate(['user'])
+          })
         }
         else
         {
@@ -57,12 +70,13 @@ export class SignInComponent implements OnInit {
     }
   }
 
+  //signin using enter keypress
   public signInUsingKeyPress(event)
   {
     if(event.keyCode===13)
     {
       this.signIn()
     }
-  }
+  }//end of keypress event
 
 }
