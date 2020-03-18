@@ -1,7 +1,33 @@
+:root
+{
+    font-size: 16px
+}
+
 #todoScroller
 {
     height: 75vh;
     overflow-y: scroll
+}
+
+.headerEmptyList
+{
+    font-size: 1.5rem
+}
+
+#paraEmptyList
+{
+    font-size: 1.1rem
+}
+
+#todolistHint
+{
+    font-size: 1.5rem;
+    font-weight: bold
+}
+
+.listDetailsView
+{
+    font-size: 1.1rem
 }
 
 .btn-circle {
@@ -25,4 +51,21 @@
     {
         height:40vh
     }
+
+    .headerEmptyList
+    {
+        font-size: 1.1rem
+    }
+
+    #todolistHint
+    {
+        font-size: 1.1rem
+    }
+
+    #paraEmptyList
+    {
+        font-size: 1rem
+    }
+
+
   }

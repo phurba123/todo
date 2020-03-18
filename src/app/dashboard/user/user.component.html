@@ -19,12 +19,14 @@
 
 <div class="container-fluid mt-1">
     <div class="row">
+
+        <!-- first col start -->
         <div class="col-md-4">
             <!-- button for adding new list -->
             <button type="button" class="btn btn-info btn-circle" title="add new list" data-toggle="collapse"
                 data-target="#inputNewList" aria-expanded="false" aria-controls="inputNewList">
                 <i class="fas fa-plus"></i></button>
-            <p class="mt-2">Your list of ToDo's</p>
+            <p class="mt-2 text-justify text-success " id="todolistHint">Your list of ToDo's</p>
 
             <ul class="list-unstyled" id="todoScroller">
 
@@ -32,7 +34,7 @@
                 <div class="row collapse no-gutters" id="inputNewList">
                     <div class="col-8">
                         <input type="text" class="form-control" placeholder="new List" [(ngModel)]="newListTitle"
-                        name="newListTitle">
+                            name="newListTitle">
                     </div>
                     <div class="col-2">
                         <button class="btn btn-info ml-1" (click)="addNewList()">Add</button>
@@ -41,11 +43,83 @@
                 <!-- end of adding new list -->
 
                 <!-- showing all list of todo's -->
-                <li *ngFor='let list of allList'>
-
+                <li *ngFor='let list of allList' class="text-secondary text-justify mt-1">
+                    <a type="button" (click)="getSingleList(list.listId)">{{list.listTitle}}</a>
                 </li>
             </ul>
 
+        </div><!-- end of first column -->
+
+        <!-- start of second column showing list details -->
+        <div class="col">
+            <!-- if no list is selected from todo's list than this div will be displayed -->
+            <div *ngIf="!selectedList" class="ml-md-4">
+                <h4 class="text-justify text-success headerEmptyList">Your list details will be shown here</h4>
+                <p class="text-secondary text-justify mt-md-4" id="paraEmptyList">No list is selected...<br>click on any
+                    one list to get the details of the list...</p>
+            </div>
+            <!-- end of div with no list selected -->
+
+            <!-- this div will be shown when any list is selected -->
+            <div *ngIf="selectedList">
+                <div class="container border rounded">
+
+                    <div class="row justify-content-center">
+                        <!-- display list title -->
+                        <h4 class="listDetailsView text-success">
+                            {{selectedList.listTitle | uppercase}}
+                        </h4>
+                        <!-- end of displaying list title -->
+                    </div>
+
+                    <div class="row justify-content-between">
+                        <!-- button to add new item to a list -->
+                        <button class="rounded btn-info" data-toggle="collapse" data-target="#createNewItem">
+                            Add item
+                        </button>
+
+                        <!-- button to edit a title of the list -->
+                        <button class="rounded btn-secondary" data-toggle="collapse" data-target="#editListTitle">
+                            Edit
+                        </button>
+
+                        <!-- button to delete a list -->
+                        <button class="rounded btn-danger" data-toggle="collapse" data-target="#deleteList">
+                            Delete
+                        </button>
+                    </div>
+
+                    <!-- collapse div for creating new item -->
+                    <div class="row collapse" id="createNewItem">
+                        <div class="d-flex">
+                            <input type="text" class="form-control" [(ngModel)]="newItemTitle" 
+                            name="newItemTitle" placeholder="add new item">
+                            <button class="btn-info" (click)="addNewItem()">Add</button>
+                        </div>
+                    </div>
+
+                    <!-- collapse div for editing list title -->
+                    <div class="row collapse justify-content-center" id="editListTitle">
+                        <div class="d-flex">
+                            <input type="text" class="form-control" placeholder="edit Title">
+                            <button class="btn-secondary">Edit</button>
+                        </div>
+                    </div>
+                </div>
+                <!--End of first container showing list title and add/delte/edit buttons-->
+
+                <!-- container for showing items of list -->
+                <div class="container mt-4">
+                    <!-- if there is item present than show this div -->
+                    <div *ngIf="selectedList.items.length>0">
+                        <div *ngFor="let item of selectedList.items">
+                            <ul class="list-unstyled">
+                                <p>{{item.itemTitle}}</p>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
