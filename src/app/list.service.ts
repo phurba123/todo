@@ -45,6 +45,15 @@ export class ListService {
     return this.http.put(`${this.listBackendUrl}/${listId}/editTitle`,params);
   }
 
+  //deleting list
+  public deleteList(listId,authToken)
+  {
+    const params = new HttpParams()
+    .set('authToken',authToken);
+
+    return this.http.post(`${this.listBackendUrl}/${listId}/delete`,params)
+  }
+
   //add new item to a list
   public addItemToList(listId, itemTitle, authToken) {
     const params = new HttpParams()

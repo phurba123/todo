@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChange, OnChanges } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ListService } from 'src/app/list.service';
 import { ToastrService } from 'ngx-toastr';
@@ -134,13 +134,34 @@ export class UserComponent implements OnInit {
 
   }
 
+  //function to delete list
+  public deleteList()
+  {
+    if(this.selectedList)
+    {
+      this.listService.deleteList(this.selectedList.listId,this.myauthToken).subscribe(
+        (apiResponse)=>
+        {
+          if(apiResponse['status']===200)
+          {
+            setTimeout(()=>
+            {
+              this.toastr.success('List deleted')
+            },100)
+            this.getAllToDoListOfUser();
+            
+            //clear selected list after deleting list
+            this.selectedList="";
+          }
+        }
+      );
+    }
+  }
+
   // public listChecker()
   // {
   //   console.log('list checked')
   // }
 
-  ngOnChanges(change: SimpleChange) {
-    console.log('change : ', change)
-  }
 
 }
