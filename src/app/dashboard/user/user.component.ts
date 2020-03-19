@@ -16,6 +16,7 @@ export class UserComponent implements OnInit {
   public selectedList;//list gets selected when user click on one of the list;
   public listChecked = false;
   public newItemTitle;//title of newly created item
+  public selectedItemOfList:any;
 
   constructor(
     private cookie: CookieService,
@@ -72,6 +73,7 @@ export class UserComponent implements OnInit {
         (apiResponse) => {
           console.log(apiResponse);
           this.selectedList = apiResponse['data'];
+          console.log('selectedList',this.selectedList)
         },
         (err) => {
           console.log(err);
@@ -156,6 +158,12 @@ export class UserComponent implements OnInit {
         }
       );
     }
+  }
+
+  public verticalEllipseClick(item)
+  {
+    this.selectedItemOfList=item;
+    console.log('selectedItemOfList',this.selectedItemOfList)
   }
 
   // public listChecker()

@@ -43,9 +43,13 @@
                 <!-- end of adding new list -->
 
                 <!-- showing all list of todo's -->
-                <li *ngFor='let list of allList' class="text-secondary text-justify mt-1">
+                <ul class="list-group">
+                    <a *ngFor="let list of allList" (click)="getSingleList(list.listId)" class="list-group-item"
+                        type="button">{{list.listTitle}}</a>
+                </ul>
+                <!-- <li *ngFor='let list of allList' class="text-secondary text-justify mt-1">
                     <a type="button" (click)="getSingleList(list.listId)">{{list.listTitle}}</a>
-                </li>
+                </li> -->
             </ul>
 
         </div><!-- end of first column -->
@@ -66,7 +70,7 @@
 
                     <div class="row justify-content-center">
                         <!-- display list title -->
-                        <h4 class="listDetailsView text-success">
+                        <h4 class="listDetailsView text-success text-monospace font-weight-bold">
                             {{selectedList.listTitle | uppercase}}
                         </h4>
                         <!-- end of displaying list title -->
@@ -130,7 +134,8 @@
                                     <!-- button to dismiss modal -->
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <!-- button to delete list -->
-                                    <button type="button" class="btn btn-danger" (click)="deleteList()" data-dismiss="modal">Yes,delete it</button>
+                                    <button type="button" class="btn btn-danger" (click)="deleteList()"
+                                        data-dismiss="modal">Yes,delete it</button>
                                 </div>
                             </div>
                         </div>
@@ -139,15 +144,46 @@
                 </div>
                 <!--End of first container showing list title and add/delte/edit buttons-->
 
-                <!-- container for showing items of list -->
-                <div class="container mt-4 rounded" id="listDetails">
-                    <!-- if there is item present than show this div -->
-                    <div *ngIf="selectedList.items.length>0">
-                        <div *ngFor="let item of selectedList.items">
-                            <ul class="list-unstyled">
-                                <p>{{item.itemTitle}}</p>
-                            </ul>
+                <!-- container for showing items of list if present-->
+                <div class="container mt-1 rounded pt-1 pb-1" *ngIf="selectedList.items.length>0" id="listDetails">
+                    <!-- making card for each item in a list -->
+                    <div class="card mt-1" *ngFor="let item of selectedList.items">
+                        <div class="card-body">
+                            <h5 class="card-title text-info">{{item.itemTitle}}
+                                <!-- on clicking vertical ellipse,it will initialize selectedItemOfList on component -->
+                                <span id="vertical-ellipsis" class="btn" (click)="verticalEllipseClick(item)"
+                                    data-toggle="collapse" data-target="#item-footer">&#8942;</span>
+                            </h5>
+
+                            <!-- section for subitems -->
                         </div>
+                        <!-- card footer for buttons related to item,
+                        Card footer will only show if user click on verticalellipse,thus initializing selectedItemOfList -->
+                        <div *ngIf="selectedItemOfList" class="collapse" id="item-footer">
+                            <div *ngIf="item.itemId==selectedItemOfList.itemId" class="card-footer">
+
+                                <!-- buttons for items -->
+                                <div class="row justify-content-around">
+                                    <!-- button to add new subitems to a list -->
+                                    <button class="rounded btn-info">
+                                        Add SubItem
+                                    </button>
+
+                                    <!-- button to edit a title of the list -->
+                                    <button class="rounded btn-secondary">
+                                        Edit
+                                    </button>
+
+                                    <!-- button to delete a list -->
+                                    <button class="rounded btn-danger">
+                                        Delete
+                                    </button>
+                                </div>
+                                <!-- end of buttons for items -->
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
