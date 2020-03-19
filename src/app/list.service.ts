@@ -15,7 +15,7 @@ export class ListService {
     private http: HttpClient
   ) { }
 
-  //getting all the list of user
+  /**Services related to list */
   public getAllListOfUser(authToken) {
     return this.http.get(`${this.listBackendUrl}/view/all?authToken=${authToken}`)
   }
@@ -30,29 +30,30 @@ export class ListService {
   }
 
   //getting single list by list id
-  public getSingleList(listId,authToken)
-  {
+  public getSingleList(listId, authToken) {
     return this.http.get(`${this.listBackendUrl}/${listId}/view?authToken=${authToken}`)
   }
 
   //editing list title by list id
-  public editListTitle(listId,authToken,newTitle)
-  {
+  public editListTitle(listId, authToken, newTitle) {
     const params = new HttpParams()
-    .set('listTitle',newTitle)
-    .set('authToken',authToken)
+      .set('listTitle', newTitle)
+      .set('authToken', authToken)
 
-    return this.http.put(`${this.listBackendUrl}/${listId}/editTitle`,params);
+    return this.http.put(`${this.listBackendUrl}/${listId}/editTitle`, params);
   }
 
   //deleting list
-  public deleteList(listId,authToken)
-  {
+  public deleteList(listId, authToken) {
     const params = new HttpParams()
-    .set('authToken',authToken);
+      .set('authToken', authToken);
 
-    return this.http.post(`${this.listBackendUrl}/${listId}/delete`,params)
+    return this.http.post(`${this.listBackendUrl}/${listId}/delete`, params)
   }
+
+  /**End of services related to list */
+
+  /**Services related to item in a list */
 
   //add new item to a list
   public addItemToList(listId, itemTitle, authToken) {
@@ -62,4 +63,25 @@ export class ListService {
 
     return this.http.put(`${this.itemBaseUrl}/${listId}/addItem`, params);
   }//end of adding new item to list
+
+  //delete item in a list
+  public deleteItem(itemId, listId, authToken) {
+    const params = new HttpParams()
+      .set('listId', listId)
+      .set('authToken', authToken)
+
+    return this.http.post(`${this.itemBaseUrl}/${itemId}/deleteItem`, params);
+  }
+
+  //edit item with a new title
+  public editItem(data)
+  {
+    const params = new HttpParams()
+    .set('itemTitle',data.itemTitle)
+    .set('authToken',data.authToken)
+
+    return this.http.put(`${this.itemBaseUrl}/${data.itemId}/editItemTitle`,params);
+  }
+
+  /**End of services related to item in a list */
 }

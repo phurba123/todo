@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ListService } from 'src/app/list.service';
 import { ToastrService } from 'ngx-toastr';
@@ -16,7 +16,8 @@ export class UserComponent implements OnInit {
   public selectedList;//list gets selected when user click on one of the list;
   public listChecked = false;
   public newItemTitle;//title of newly created item
-  public selectedItemOfList:any;
+  public selectedItemOfList: any;
+  public itemEditTitle: string;//for editing the title of an item
 
   constructor(
     private cookie: CookieService,
@@ -73,7 +74,7 @@ export class UserComponent implements OnInit {
         (apiResponse) => {
           console.log(apiResponse);
           this.selectedList = apiResponse['data'];
-          console.log('selectedList',this.selectedList)
+          console.log('selectedList', this.selectedList)
         },
         (err) => {
           console.log(err);
@@ -108,6 +109,9 @@ export class UserComponent implements OnInit {
             }
           )
       }
+      else {
+        this.toastr.warning('item cannot be empty');
+      }
 
     }
   }
@@ -125,7 +129,7 @@ export class UserComponent implements OnInit {
             this.getSingleList(this.selectedList.listId);
             this.newEditListTitle = "";//cleart edit text box after updating list title
 
-            this.toastr.success('list updated')
+            this.toastr.success('list updated');
           }
         },
         (err) => {
@@ -137,33 +141,78 @@ export class UserComponent implements OnInit {
   }
 
   //function to delete list
-  public deleteList()
-  {
-    if(this.selectedList)
-    {
-      this.listService.deleteList(this.selectedList.listId,this.myauthToken).subscribe(
-        (apiResponse)=>
-        {
-          if(apiResponse['status']===200)
-          {
-            setTimeout(()=>
-            {
+  public deleteList() {
+    if (this.selectedList) {
+      this.listService.deleteList(this.selectedList.listId, this.myauthToken).subscribe(
+        (apiResponse) => {
+          if (apiResponse['status'] === 200) {
+            setTimeout(() => {
               this.toastr.success('List deleted')
-            },100)
+            }, 100)
             this.getAllToDoListOfUser();
-            
+
             //clear selected list after deleting list
-            this.selectedList="";
+            this.selectedList = "";
           }
         }
       );
     }
   }
 
-  public verticalEllipseClick(item)
-  {
-    this.selectedItemOfList=item;
-    console.log('selectedItemOfList',this.selectedItemOfList)
+  public verticalEllipseClick(item) {
+    this.selectedItemOfList = item;
+    // console.log('selectedItemOfList', this.selectedItemOfList)
+    //As user clicks on another item in a list ,clear its previous item edit title
+    this.itemEditTitle="";
+  }
+
+  //function to delete item
+  public deleteItem() {
+    // console.log("selectedList : ",this.selectedList);
+    // console.log('selectedItem : ',this.selectedItemOfList)
+    if (this.selectedItemOfList) {
+      this.listService.deleteItem(this.selectedItemOfList.itemId, this.selectedList.listId, this.myauthToken)
+        .subscribe(
+          (apiResponse) => {
+            if (apiResponse['status'] === 200) {
+              this.toastr.success('item deleted');
+              this.getSingleList(this.selectedList.listId)
+              //empty selected item of list after deleting that item
+              this.selectedItemOfList = "";
+            }
+          }
+        );
+    }
+  }
+
+  //function to edit item title
+  public editItem() {
+    if (!this.itemEditTitle) {
+      this.toastr.warning('nothing to edit')
+    }
+    else {
+      //editing item
+      let data =
+      {
+        itemId: this.selectedItemOfList.itemId,
+        itemTitle: this.itemEditTitle,
+        authToken: this.myauthToken
+      }
+
+      this.listService.editItem(data).subscribe(
+        (apiResponse) => {
+          if (apiResponse['status'] === 200) {
+            this.toastr.success('item edited');
+
+            // for refreshing the selected list
+            this.getSingleList(this.selectedList.listId)
+          }
+        },
+        (err) => {
+          console.log(err)
+        }
+      );
+    }
   }
 
   // public listChecker()
