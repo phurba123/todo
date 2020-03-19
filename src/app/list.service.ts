@@ -35,6 +35,16 @@ export class ListService {
     return this.http.get(`${this.listBackendUrl}/${listId}/view?authToken=${authToken}`)
   }
 
+  //editing list title by list id
+  public editListTitle(listId,authToken,newTitle)
+  {
+    const params = new HttpParams()
+    .set('listTitle',newTitle)
+    .set('authToken',authToken)
+
+    return this.http.put(`${this.listBackendUrl}/${listId}/editTitle`,params);
+  }
+
   //add new item to a list
   public addItemToList(listId, itemTitle, authToken) {
     const params = new HttpParams()

@@ -94,15 +94,16 @@
                         <div class="d-flex">
                             <input type="text" class="form-control" [(ngModel)]="newItemTitle" 
                             name="newItemTitle" placeholder="add new item">
-                            <button class="btn-info" (click)="addNewItem()">Add</button>
+                            <button class="btn-info rounded" (click)="addNewItem()">Add</button>
                         </div>
                     </div>
 
                     <!-- collapse div for editing list title -->
                     <div class="row collapse justify-content-center" id="editListTitle">
                         <div class="d-flex">
-                            <input type="text" class="form-control" placeholder="edit Title">
-                            <button class="btn-secondary">Edit</button>
+                            <input type="text" class="form-control" [(ngModel)]="newEditListTitle"
+                            name="newEditListTitle" placeholder="edit Title">
+                            <button class="btn-secondary rounded" (click)="editListTitle()">Edit</button>
                         </div>
                     </div>
                 </div>
