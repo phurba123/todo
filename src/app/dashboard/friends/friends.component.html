@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
+    <a class="navbar-brand font-weight-bold">ToDo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['/user']">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" type="button">Friends<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['/user/allusers']">AllUsers</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!-- end of navigation -->
+
+<!-- displaying friends -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <a class="navbar-brand font-weight-bold mr-auto displayDesktop">Friends</a>
+            <nav class="navbar navbar-expand-lg navbar-light mt-1 ">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myFriendBar"
+                    aria-controls="myFriendBar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand font-weight-bold mr-auto displayMobile">Friends</a>
+
+                <div class="collapse navbar-collapse" id="myFriendBar">
+                    <ul id="friendlist-scroller" class="list-group rounded text-center">
+                        <!-- iterate over myFriends to display their names in list -->
+                        <li *ngFor="let friend of myFriends" class="list-group-item bg-info">{{friend.friendName}}</li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>

@@ -49,9 +49,19 @@ export class SignInComponent implements OnInit {
         if(apiResponse['status']===200)
         {
           this.toastr.success('SignIn success');
+          console.log(apiResponse)
 
           //set authToken to cookie
-          this.cookie.set('token',apiResponse['data']['authToken'])
+          this.cookie.set('token',apiResponse['data']['authToken']);
+
+          //set logger user details on local storage
+          let data = 
+          {
+            'userId':apiResponse['data']['userDetails']['userId'],
+            'userName':apiResponse['data']['userDetails']['firstName'] +" " +apiResponse['data']['userDetails']['lastName']
+          }
+          console.log(data);
+          this.appService.setUserInfo(data);
           //on successfull sign in ,navigate to user dashboard
           setTimeout(()=>
           {

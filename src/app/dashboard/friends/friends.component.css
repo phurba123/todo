@@ -1,0 +1,36 @@
+.displayDesktop
+{
+    display: block
+}
+
+.displayMobile
+{
+    display: none
+}
+
+#friendlist-scroller
+{
+    height:80vh;
+    overflow-y: scroll;
+    width: 100%;
+    background-color:lightblue
+}
+
+
+@media only screen and (max-width:575px)
+{
+    .displayDesktop
+    {
+        display:none;
+    }
+
+    .displayMobile
+    {
+        display: inline-block
+    }
+
+    #friendlist-scroller
+    {
+        height:40vh
+    }
+}

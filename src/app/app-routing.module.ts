@@ -4,6 +4,8 @@ import { SignInComponent } from './user/sign-in/sign-in.component';
 import { SignupComponent } from './user/signup/signup.component';
 import { ForgotPasswordComponent } from './user/forgot-password/forgot-password.component';
 import { UserComponent } from './dashboard/user/user.component';
+import { FriendsComponent } from './dashboard/friends/friends.component';
+import { AllusersComponent } from './dashboard/allusers/allusers.component';
 
 
 const routes: Routes = [
@@ -11,7 +13,9 @@ const routes: Routes = [
   {path:'signup',component:SignupComponent},
   {path:'',redirectTo:'signin',pathMatch:'full'},
   {path:'forgotpassword',component:ForgotPasswordComponent},
-  {path:'user',component:UserComponent}
+  {path:'user',component:UserComponent},
+  {path:'user/:userId/friends',component:FriendsComponent},
+  {path:'user/allusers',component:AllusersComponent}
 ];
 
 @NgModule({

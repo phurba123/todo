@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ListService } from 'src/app/list.service';
 import { ToastrService } from 'ngx-toastr';
+import { AppService } from 'src/app/app.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -19,14 +21,20 @@ export class UserComponent implements OnInit {
   public selectedItemOfList: any;
   public itemEditTitle: string;//for editing the title of an item
 
+  public userDetails:any;
+
   constructor(
     private cookie: CookieService,
     private listService: ListService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private appService : AppService,
+    private router:Router
   ) { }
 
   ngOnInit() {
-    this.myauthToken = this.cookie.get('token')
+    this.myauthToken = this.cookie.get('token');
+    this.userDetails = this.appService.getUserInfo();
+    console.log('userDetails',this.userDetails)
     this.getAllToDoListOfUser();
   }
 
@@ -219,6 +227,8 @@ export class UserComponent implements OnInit {
   // {
   //   console.log('list checked')
   // }
+
+ 
 
 
 }

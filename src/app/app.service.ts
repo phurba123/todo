@@ -12,7 +12,7 @@ export class AppService {
     private http: HttpClient
   ) { }
 
-  //services for user management
+  /**Services related to users */
 
   //signup
   public signUp(data) {
@@ -35,6 +35,31 @@ export class AppService {
     return this.http.post(`${this.userBackendUrl}/signin`, params);
   }//end of signIn
 
+  //getting all users
+  public getAllUsers(authToken)
+  {
+    return this.http.get(`${this.userBackendUrl}/view/all?authToken=${authToken}`)
+  }
+
+  //getting userdetails by userid
+  public getUserDetailsById(userId,authToken)
+  {
+    return this.http.get(`${this.userBackendUrl}/${userId}/view?authToken=${authToken}`)
+  }
+
+  //for sending friend request
+  public sendFriendRequest(data)
+  {
+    const params = new HttpParams()
+    .set('senderId',data.senderId)
+    .set('receiverId',data.receiverId)
+    .set('authToken',data.authToken)
+
+    return this.http.put(`${this.userBackendUrl}/request/friend`,params);
+  }//end of sending friend request
+
+  /**End of services related to users */
+
 
 
   /**Countries related service*/
@@ -49,4 +74,19 @@ export class AppService {
     return this.http.get('../assets/countryCodes.json');
   }
   /**End of countries related service  */
+
+
+  /**Local storage */
+
+  //setting user info
+  public setUserInfo(userDetail)
+  {
+    localStorage.setItem('userInfo',JSON.stringify(userDetail));
+  }
+
+  //getting userDetails
+  public getUserInfo()
+  {
+   return JSON.parse(localStorage.getItem('userInfo'));
+  }
 }
