@@ -189,6 +189,11 @@
 
                     </div>
                 </div>
+
+                <!-- if no items is present in current list selected -->
+                <div *ngIf="selectedList.items==0">
+                    <p class="text-danger text-justify">currently there is no items in this list</p>
+                </div>
             </div>
         </div>
     </div>

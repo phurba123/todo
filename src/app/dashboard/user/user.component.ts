@@ -61,8 +61,9 @@ export class UserComponent implements OnInit {
         (apiResponse) => {
           if (apiResponse['status'] === 200) {
             this.toastr.success('List Created');
+            console.log(apiResponse)
             this.newListTitle = "";//clearing input text after adding new list;
-            this.getAllToDoListOfUser()
+            this.allList.push(apiResponse['data'])
           }
         },
         (err) => {

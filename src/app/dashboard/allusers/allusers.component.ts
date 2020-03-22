@@ -12,7 +12,7 @@ export class AllusersComponent implements OnInit {
   public userDetails;
   public myAuthToken;
   public allUsers;//this will hold all users except me
-  public myFriends:any[];
+  public myFriends:any[]=[];
   public friendRequestSent:any[];// holds the userId of users to whom friend request has been sent
 
   constructor(
@@ -101,6 +101,7 @@ export class AllusersComponent implements OnInit {
   {
     allUsers.map((user)=>
     {
+      console.log('length : ',this.friendRequestSent.length)
       if(this.friendRequestSent.length>0)
       {
         for(let i=0;i<this.friendRequestSent.length;i++)
@@ -146,7 +147,9 @@ export class AllusersComponent implements OnInit {
     {
       senderId:this.userDetails.userId, //my userId
       receiverId:user.userId,
-      authToken:this.myAuthToken
+      authToken:this.myAuthToken,
+      senderName:this.userDetails.userName,
+      receiverName:`${user.firstName} ${user.lastName}`
     }
     console.log('data : ',data)
     //calling service method for sending friend request

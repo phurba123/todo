@@ -6,6 +6,7 @@ import { ForgotPasswordComponent } from './user/forgot-password/forgot-password.
 import { UserComponent } from './dashboard/user/user.component';
 import { FriendsComponent } from './dashboard/friends/friends.component';
 import { AllusersComponent } from './dashboard/allusers/allusers.component';
+import { FriendRequestsComponent } from './dashboard/friend-requests/friend-requests.component';
 
 
 const routes: Routes = [
@@ -15,7 +16,8 @@ const routes: Routes = [
   {path:'forgotpassword',component:ForgotPasswordComponent},
   {path:'user',component:UserComponent},
   {path:'user/:userId/friends',component:FriendsComponent},
-  {path:'user/allusers',component:AllusersComponent}
+  {path:'user/allusers',component:AllusersComponent},
+  {path:'user/friendrequests',component:FriendRequestsComponent}
 ];
 
 @NgModule({

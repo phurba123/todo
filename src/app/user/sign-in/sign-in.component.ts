@@ -57,7 +57,8 @@ export class SignInComponent implements OnInit {
             'userName':apiResponse['data']['userDetails']['firstName'] +" " +apiResponse['data']['userDetails']['lastName'],
             'authToken':apiResponse['data']['authToken']
           }
-          console.log(data);
+          //console.log(data);
+          console.log(apiResponse['data'])
           this.appService.setUserInfo(data);
           //on successfull sign in ,navigate to user dashboard
           setTimeout(()=>

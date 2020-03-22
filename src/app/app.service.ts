@@ -54,9 +54,30 @@ export class AppService {
     .set('senderId',data.senderId)
     .set('receiverId',data.receiverId)
     .set('authToken',data.authToken)
+    .set('senderName',data.senderName)
+    .set('receiverName',data.receiverName)
 
     return this.http.put(`${this.userBackendUrl}/request/friend`,params);
   }//end of sending friend request
+
+  //for getting friend request received
+  public getFriendRequests(userId,authToken)
+  {
+    return this.http.get(`${this.userBackendUrl}/${userId}/view/friendrequests?authToken=${authToken}`)
+  }
+
+  //accepting friend request
+  public acceptFriendRequest(data)
+  {
+    const params = new HttpParams()
+    .set('senderId',data.senderId)
+    .set('senderName',data.senderName)
+    .set('receiverId',data.receiverId)
+    .set('receiverName',data.receiverName)
+    .set('authToken',data.authToken)
+
+    return this.http.post(`${this.userBackendUrl}/accept/friend/request`,params)
+  }//end of accepting friend request
 
   /**End of services related to users */
 
