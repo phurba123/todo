@@ -25,34 +25,37 @@
     <div class="row justify-content-center">
         <div class="col-md-4">
 
-            <div>
+            <div *ngIf="allUsers">
                 <ul class="list-group">
                     <div *ngFor="let user of allUsers" class="list-group-item row d-flex justify-content-between">
                         <div>{{user.firstName}} {{user.lastName}}</div>
 
-                        <!-- if friend is there for current user -->
-                        <div *ngIf="myFriends">
-                            <div *ngFor="let myFriend of myFriends">
-                                <!-- if userId of current user in a list matches with friendId on my list,
-                                than display friends -->
-                                <div *ngIf="myFriend.friendId===user.userId">
-                                    <a class="text-muted">Friends</a>
-                                </div>
-                                <!-- if not friends,than display add button for adding friend -->
-                                <div *ngIf="myFriend.friendId!=user.userId">
-                                    <!-- on clicking add button it should send friend req to that user -->
-                                    <button class="btn btn-primary" (click)="sendFriendRequest(user)">Add</button>
-                                </div>
-                            </div>
+                        <div *ngIf ="user.status=='friends'">
+                            <a>Friends</a>
+                        </div>
+                        <div *ngIf="user.status =='requested'">
+                            <button class="btn btn-secondary text-white rounded" disabled>Requested</button>
+                        </div>
+                        <div *ngIf="user.status=='not requested'">
+                                <button *ngIf="user.status=='not requested'" class="btn btn-primary rounded" 
+                                (click)="sendFriendRequest(user)">Add
+                            </button>
                         </div>
 
+                        <!-- if friend is there for current user -->
+                       
+
                         <!-- if i have no friends currently than add (add) button on all list -->
-                        <div *ngIf="myFriends.length==0">
-                            <button class="btn btn-primary rounded">Add</button>
-                        </div>
+                        <!-- <div *ngIf="myFriends!=0">
+                            <button class="btn btn-primary rounded" (click)="sendFriendRequest(user)">Add</button>
+                        </div> -->
 
                     </div>
                 </ul>
+            </div>
+
+            <div *ngIf="!allUsers">
+                <p>There is currently no users to add friend...</p>
             </div>
         </div>
     </div>

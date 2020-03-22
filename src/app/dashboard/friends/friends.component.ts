@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router,ActivatedRoute} from '@angular/router'
 import { AppService } from 'src/app/app.service';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-friends',
@@ -13,16 +12,17 @@ export class FriendsComponent implements OnInit {
   public myAuthToken;
   public myUserDetails;
   public myFriends:any;
+  public userDetails;
 
   constructor(
     private route:ActivatedRoute,
-    private appService:AppService,
-    private cookie:CookieService
+    private appService:AppService
   ) { }
 
   ngOnInit() {
     this.myUserId=this.route.snapshot.paramMap.get('userId');
-    this.myAuthToken= this.cookie.get('token')
+    this.userDetails = this.appService.getUserInfo()
+    this.myAuthToken= this.userDetails.authToken;
     // console.log(this.myAuthToken)
     this.getUserDetail();
   }

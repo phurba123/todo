@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
 import { ListService } from 'src/app/list.service';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/app.service';
@@ -24,7 +23,6 @@ export class UserComponent implements OnInit {
   public userDetails:any;
 
   constructor(
-    private cookie: CookieService,
     private listService: ListService,
     private toastr: ToastrService,
     private appService : AppService,
@@ -32,8 +30,8 @@ export class UserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.myauthToken = this.cookie.get('token');
     this.userDetails = this.appService.getUserInfo();
+    this.myauthToken=this.userDetails.authToken;
     console.log('userDetails',this.userDetails)
     this.getAllToDoListOfUser();
   }

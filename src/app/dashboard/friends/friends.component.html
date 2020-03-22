@@ -35,8 +35,20 @@
                 <div class="collapse navbar-collapse" id="myFriendBar">
                     <ul id="friendlist-scroller" class="list-group rounded text-center">
                         <!-- iterate over myFriends to display their names in list -->
-                        <li *ngFor="let friend of myFriends" class="list-group-item bg-info">{{friend.friendName}}</li>
+                        <div *ngIf="myFriends">
+                                <li *ngFor="let friend of myFriends" class="list-group-item bg-info">{{friend.friendName}}</li>
+                        </div>
+                        
+
+                        <!-- if users doesn't have any friends than -->
+                        <div *ngIf="myFriends==0">
+                            <p class="text-justify mt-5 text-danger"> You currently don't have any friends</p>
+                            <p><small>why not make some friends?<a type="button" [routerLink]="['/user/allusers']">
+                                <ins class="text-success">click here</ins> </a></small></p>
+                        </div>
+                        <!-- end of div that is displayed when there is no friend of user -->
                     </ul>
+
                 </div>
             </nav>
         </div>

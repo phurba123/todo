@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/app.service';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-sign-in',
@@ -17,8 +16,7 @@ export class SignInComponent implements OnInit {
   constructor(
     private toastr:ToastrService,
     private appService : AppService,
-    private router:Router,
-    private cookie:CookieService
+    private router:Router
   ) { }
 
   ngOnInit() {
@@ -51,14 +49,13 @@ export class SignInComponent implements OnInit {
           this.toastr.success('SignIn success');
           console.log(apiResponse)
 
-          //set authToken to cookie
-          this.cookie.set('token',apiResponse['data']['authToken']);
 
           //set logger user details on local storage
           let data = 
           {
             'userId':apiResponse['data']['userDetails']['userId'],
-            'userName':apiResponse['data']['userDetails']['firstName'] +" " +apiResponse['data']['userDetails']['lastName']
+            'userName':apiResponse['data']['userDetails']['firstName'] +" " +apiResponse['data']['userDetails']['lastName'],
+            'authToken':apiResponse['data']['authToken']
           }
           console.log(data);
           this.appService.setUserInfo(data);

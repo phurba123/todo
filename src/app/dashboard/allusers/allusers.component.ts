@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from 'src/app/app.service';
-import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -8,23 +7,23 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './allusers.component.html',
   styleUrls: ['./allusers.component.css']
 })
+
 export class AllusersComponent implements OnInit {
   public userDetails;
   public myAuthToken;
   public allUsers;//this will hold all users except me
   public myFriends:any[];
-  public friendRequestSent:any;// holds the userId of users to whom friend request has been sent
+  public friendRequestSent:any[];// holds the userId of users to whom friend request has been sent
 
   constructor(
     private appService:AppService,
-    private cookie:CookieService,
     private toastr:ToastrService
   ) { }
 
   ngOnInit() {
     this.userDetails=this.appService.getUserInfo();
     console.log('myDetails',this.userDetails);
-    this.myAuthToken=this.cookie.get('token')
+    this.myAuthToken=this.userDetails.authToken;
     this.getUserDetail()
     this.getAllUsers();
   }
@@ -39,6 +38,7 @@ export class AllusersComponent implements OnInit {
         {
           //initializing myFriends with data of friends
           this.myFriends = apiResponse['data']['friends'];
+          console.log('myfriends : ',this.myFriends)
 
           //initializing sent friend
           this.friendRequestSent = apiResponse['data']['friendRequestSent'];
@@ -92,11 +92,56 @@ export class AllusersComponent implements OnInit {
         // console.log(allUsers);
       }
     })
+
+    //add status for friend request,if request has been sent or not
+    this.addFriendStatus(this.allUsers)
   }//end of removing myself from allUsers
+
+  public addFriendStatus(allUsers)
+  {
+    allUsers.map((user)=>
+    {
+      if(this.friendRequestSent.length>0)
+      {
+        for(let i=0;i<this.friendRequestSent.length;i++)
+        {
+          if(this.friendRequestSent[i].friendId===user.userId)
+          {
+            user.status = 'requested';
+            break;
+          }
+          else
+          {
+            user.status='not requested'
+          }
+        }
+      }
+      else
+      {
+        //if there is not a single friendrequest sent by users than set user status to not requested for all
+        user.status= 'not requested'
+      }
+
+      //if that user is on my friend list than add its status to friends
+      if(this.myFriends.length>0)
+      {
+        for(let i = 0;i<this.myFriends.length;i++)
+        {
+          if(this.myFriends[i].friendId===user.userId)
+          {
+            user.status ='friends';
+            break;
+          }
+        }
+      }
+    })
+    console.log(allUsers)
+  }
 
   // function for sending friend request
   public sendFriendRequest(user)
   {
+    console.log('insied')
     let data = 
     {
       senderId:this.userDetails.userId, //my userId
@@ -120,7 +165,10 @@ export class AllusersComponent implements OnInit {
           }
 
           this.friendRequestSent.push(data);
-          console.log(this.friendRequestSent)
+
+          //set this user status to requested
+          this.addSingleUserFriendStatus(user.userId)
+          // console.log(this.friendRequestSent)
         }
         else
         {
@@ -132,6 +180,18 @@ export class AllusersComponent implements OnInit {
         this.toastr.error(err.error.message)
       }
     )
+  }
+
+  //setting single user status to requested after clicking add button 
+  public addSingleUserFriendStatus(userId)
+  {
+    this.allUsers.map((user)=>
+    {
+      if(user.userId===userId)
+      {
+        user.status='requested';
+      }
+    })
   }
 
 }
