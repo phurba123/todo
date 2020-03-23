@@ -19,20 +19,22 @@ export class UserComponent implements OnInit {
   public newItemTitle;//title of newly created item
   public selectedItemOfList: any;
   public itemEditTitle: string;//for editing the title of an item
+  public subItemsOfItem: any[] = [];
+  public newSubItemTitle: any;
 
-  public userDetails:any;
+  public userDetails: any;
 
   constructor(
     private listService: ListService,
     private toastr: ToastrService,
-    private appService : AppService,
-    private router:Router
+    private appService: AppService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.userDetails = this.appService.getUserInfo();
-    this.myauthToken=this.userDetails.authToken;
-    console.log('userDetails',this.userDetails)
+    this.myauthToken = this.userDetails.authToken;
+    console.log('userDetails', this.userDetails)
     this.getAllToDoListOfUser();
   }
 
@@ -81,6 +83,8 @@ export class UserComponent implements OnInit {
         (apiResponse) => {
           console.log(apiResponse);
           this.selectedList = apiResponse['data'];
+
+          this.getSubItems(this.selectedList)
           console.log('selectedList', this.selectedList)
         },
         (err) => {
@@ -89,6 +93,29 @@ export class UserComponent implements OnInit {
       )
     }
   }
+
+  //getting subitems
+  public getSubItems(selectedlist) {
+    this.subItemsOfItem = [];
+    console.log(selectedlist['items'].length)
+
+    //iterate through items of list
+    if (selectedlist['items'].length > 0) {
+      selectedlist['items'].map((singleItem) => {
+        this.listService.getSubitemsOfItem(singleItem.itemId, this.myauthToken).subscribe(
+          (apiresponse) => {
+            // if subitem is present than only push it onto suitemslist
+            if (apiresponse['data']) {
+              this.subItemsOfItem.push(apiresponse['data'])
+              //console.log('subitem',this.subItemsOfItem)
+            }
+
+          }
+        )
+      })
+    }
+
+  }//end of getting subitems
 
   // adding new item to list
   public addNewItem() {
@@ -170,7 +197,7 @@ export class UserComponent implements OnInit {
     this.selectedItemOfList = item;
     // console.log('selectedItemOfList', this.selectedItemOfList)
     //As user clicks on another item in a list ,clear its previous item edit title
-    this.itemEditTitle="";
+    this.itemEditTitle = "";
   }
 
   //function to delete item
@@ -227,7 +254,65 @@ export class UserComponent implements OnInit {
   //   console.log('list checked')
   // }
 
- 
+  //adding subitem
+  public addSubItem(item) {
+    console.log(item)
 
+    let data =
+    {
+      itemId: item.itemId,
+      subItemTitle: this.newSubItemTitle,
+      authToken: this.myauthToken
+    }
+
+    this.listService.addSubitem(data).subscribe(
+      (apiresponse) => {
+        if (apiresponse['status'] === 200) {
+
+          //adding temp data to subitems
+          this.getSubItems(this.selectedList)
+          console.log('subitem : ', this.subItemsOfItem)
+          this.toastr.success('subitem added')
+        }
+      }
+    )
+  }//
+
+  //edit subitem
+  public editSubItem(subitem, item) {
+    console.log(subitem)
+    console.log('item : ', item)
+  }
+
+  //delete subitem
+  public deleteSubItem(subitem, item) {
+    console.log(subitem.subItemId)
+    let data =
+    {
+      subItemId: subitem.subItemId,
+      authToken: this.myauthToken,
+      itemId: item.itemId
+    }
+
+    this.listService.deleteSubItem(data).subscribe(
+      (apiresponse) => {
+        if (apiresponse['status'] === 200) {
+          // console.log(this.subItemsOfItem);
+
+          //subitem is deleted ,but remove it from subitem array temporarily to refresh the page
+          //console.log(this.subItemsOfItem[0])
+          this.subItemsOfItem[0].subItems.map((subitem, index) => {
+            if (subitem.subItemId === subitem.subItemId) {
+              //removing currently deleted subitem from subitems array using slice method of array
+              this.subItemsOfItem[0].subItems.splice(index, 1);
+            }
+          })
+        }
+      },
+      (err) => {
+        console.log(err)
+      }
+    )
+  }//end of delete of subitems
 
 }

@@ -11,6 +11,9 @@ export class ListService {
   // backend url related to item of list
   private itemBaseUrl = 'http://localhost:3000/api/v1/list/item';
 
+  // backend url related to subitem
+  private subitemBaseUrl = 'http://localhost:3000/api/v1/list/item/subItem';
+
   constructor(
     private http: HttpClient
   ) { }
@@ -84,4 +87,34 @@ export class ListService {
   }
 
   /**End of services related to item in a list */
+
+  /**Services related to subitems */
+
+  //getting subitems of item
+  public getSubitemsOfItem(itemId,authToken)
+  {
+    return this.http.get(`${this.subitemBaseUrl}/${itemId}/view?authToken=${authToken}`)
+  }//end of getting subitems
+
+  //adding subitems to item
+  public addSubitem(data)
+  {
+    const params = new HttpParams()
+    .set('subItemTitle',data.subItemTitle)
+    .set('authToken',data.authToken)
+
+    return this.http.put(`${this.subitemBaseUrl}/${data.itemId}/addItem`,params)
+  }
+
+  //deleting subitem
+  public deleteSubItem(data)
+  {
+    const params = new HttpParams()
+    .set('authToken',data.authToken)
+    .set('itemId',data.itemId)
+
+    return this.http.post(`${this.subitemBaseUrl}/${data.subItemId}/delete`,params)
+  }
+
+  //**End of services related to subitems */
 }

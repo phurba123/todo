@@ -154,11 +154,32 @@
                         <div class="card-body">
                             <h5 class="card-title text-info">{{item.itemTitle}}
                                 <!-- on clicking vertical ellipse,it will initialize selectedItemOfList on component -->
-                                <span id="vertical-ellipsis" class="btn" (click)="verticalEllipseClick(item)"
+                                <span class="btn vertical-ellipsis" (click)="verticalEllipseClick(item)"
                                     data-toggle="collapse" data-target="#item-footer">&#8942;</span>
                             </h5>
 
                             <!-- section for subitems -->
+                            <div *ngIf="subItemsOfItem">
+                                <!-- iterate over subitemsofitem -->
+                                <ul *ngFor="let subitems of subItemsOfItem" class="list-group">
+                                    <!-- if subitem.itemId is equal to current itemId ,than display subitem title -->
+                                    <div *ngIf="subitems.itemId==item.itemId" class="list-group-item">
+
+                                        <!-- when subitem item id is equal to current item id ,iterate over subitems to get title -->
+                                        <div *ngFor = "let subitem of subitems.subItems ">
+                                                <i class="text-danger">{{subitem.subItemTitle}}<a class="dropdown-toggle text-secondary" type="button"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                                    <div class="dropdown-menu bg-secondary">
+                                                            <a class="dropdown-item text-info" type="button" (click)="editSubItem(subitem,item)">Edit</a>
+                                                            <a class="dropdown-item text-danger" type="button" (click)="deleteSubItem(subitem,item)">Delete</a>
+                                                    </div>
+                                                </i>
+                                        </div>
+                                        
+                                    </div>
+                                </ul>
+                            </div>
+                            <!-- end of section for subitems -->
                         </div>
                         <!-- card footer for buttons related to item,
                         Card footer will only show if user click on verticalellipse,thus initializing selectedItemOfList -->
@@ -168,7 +189,7 @@
                                 <!-- buttons for items -->
                                 <div class="row justify-content-around">
                                     <!-- button to add new subitems to a list -->
-                                    <button class="rounded btn-info">
+                                    <button class="rounded btn-info" data-toggle="modal" data-target="#addsubitem">
                                         Add SubItem
                                     </button>
 
@@ -259,4 +280,32 @@
         </div>
     </div>
 </div>
+<!-- modal for adding subitem -->
+<div class="modal" id="addsubitem" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- modal header -->
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title">Add SubItem</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <!-- end of modal header -->
+                </div>
+                <!-- start of modal body -->
+                <div class="modal-body">
+                    <input type="text" class="form-control" [(ngModel)]="newSubItemTitle" name="newSubItemTitle" placeholder="subitem title">
+                </div>
+                <!-- end of modal body -->
+    
+                <!-- start of modal footer -->
+                <div class="modal-footer">
+                    <!-- button to dismiss modal -->
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!-- button to delete list -->
+                    <button type="button" class="btn btn-danger" (click)="addSubItem(selectedItemOfList)" data-dismiss="modal">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- end of modal to delete item -->

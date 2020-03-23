@@ -31,7 +31,7 @@
                         <div>{{user.firstName}} {{user.lastName}}</div>
 
                         <div *ngIf ="user.status=='friends'">
-                            <a>Friends</a>
+                            <a class="text-secondary">Friends</a>
                         </div>
                         <div *ngIf="user.status =='requested'">
                             <button class="btn btn-secondary text-white rounded" disabled>Requested</button>

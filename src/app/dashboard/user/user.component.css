@@ -52,7 +52,7 @@
     height: 73vh
 }
 
-#vertical-ellipsis
+.vertical-ellipsis
 {
     content:"\22EE";
     color: black;
