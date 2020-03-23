@@ -3,11 +3,13 @@ import { ListService } from 'src/app/list.service';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/app.service';
 import { Router } from '@angular/router';
+import {Location} from '@angular/common'
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.css']
+  styleUrls: ['./user.component.css'],
+  providers:[Location]
 })
 export class UserComponent implements OnInit {
   public myauthToken;
@@ -23,24 +25,40 @@ export class UserComponent implements OnInit {
   public newSubItemTitle: any;
 
   public userDetails: any;
+  public friendDetails:any;
 
   constructor(
     private listService: ListService,
     private toastr: ToastrService,
     private appService: AppService,
-    private router: Router
+    private router: Router,
+    private location:Location
   ) { }
 
   ngOnInit() {
     this.userDetails = this.appService.getUserInfo();
+    this.friendDetails=this.appService.getFriendInfo();
     this.myauthToken = this.userDetails.authToken;
     console.log('userDetails', this.userDetails)
-    this.getAllToDoListOfUser();
+
+    this.validateUser()
+    
+  }
+  //validate if friend  is selected or not
+  public validateUser()
+  {
+    if(this.friendDetails.isFriendSelected)
+    {
+      this.getAllToDoListOfUser(this.friendDetails.friendId)
+    }
+    else{
+      this.getAllToDoListOfUser(this.userDetails.userId);
+    }
   }
 
   //getting all the list of current user
-  public getAllToDoListOfUser() {
-    this.listService.getAllListOfUser(this.myauthToken).subscribe(
+  public getAllToDoListOfUser(userId) {
+    this.listService.getAllListOfUser(this.myauthToken,userId).subscribe(
       (apiResponse) => {
         if (apiResponse['status'] === 200) {
           this.allList = apiResponse['data'];
@@ -59,7 +77,19 @@ export class UserComponent implements OnInit {
       this.toastr.warning('Title is empty')
     }
     else {
-      this.listService.createNewList(this.newListTitle, this.myauthToken).subscribe(
+      let currentUserId="";//user id to whom this lists belongs to,
+
+      //if new list is being created on friend lists,than
+      if(this.friendDetails.isFriendSelected)
+      {
+        //if friend is selected,than this current lists belongs to that friend,but creator will be me
+        currentUserId=this.friendDetails.friendId;
+      }
+      else
+      {
+        currentUserId=this.userDetails.userId
+      }
+      this.listService.createNewList(this.newListTitle, this.myauthToken,this.userDetails.userId,currentUserId).subscribe(
         (apiResponse) => {
           if (apiResponse['status'] === 200) {
             this.toastr.success('List Created');
@@ -159,7 +189,7 @@ export class UserComponent implements OnInit {
       this.listService.editListTitle(this.selectedList.listId, this.myauthToken, this.newEditListTitle).subscribe(
         (apiResponse) => {
           if (apiResponse['status'] === 200) {
-            this.getAllToDoListOfUser();
+            this.validateUser();
             this.getSingleList(this.selectedList.listId);
             this.newEditListTitle = "";//cleart edit text box after updating list title
 
@@ -183,7 +213,7 @@ export class UserComponent implements OnInit {
             setTimeout(() => {
               this.toastr.success('List deleted')
             }, 100)
-            this.getAllToDoListOfUser();
+            this.validateUser();
 
             //clear selected list after deleting list
             this.selectedList = "";
@@ -276,6 +306,8 @@ export class UserComponent implements OnInit {
         }
       }
     )
+
+    this.newSubItemTitle = "";
   }//
 
   //edit subitem
@@ -306,7 +338,9 @@ export class UserComponent implements OnInit {
               //removing currently deleted subitem from subitems array using slice method of array
               this.subItemsOfItem[0].subItems.splice(index, 1);
             }
-          })
+          });
+
+          this.toastr.success('subitem deleted')
         }
       },
       (err) => {
@@ -314,5 +348,27 @@ export class UserComponent implements OnInit {
       }
     )
   }//end of delete of subitems
+
+  /** if iam currently on friend dashboard,than by clicking home button i will go to my dashboard by clearing 
+  currently selected friend from local storage*/
+
+  public goBackFromFriendDashboard()
+  {
+    console.log('inside')
+    //reset friendinfo from local storage
+    this.appService.deleteFriendInfo();
+
+    let friendInfo =
+    {
+      isFriendSelected:false,
+      friendId:'',
+      friendName:''
+    }
+    this.appService.setFriendInfo(friendInfo)
+
+    //after deleting friend info navigate to home component,than,my details will show
+    this.location.back();
+
+  }
 
 }

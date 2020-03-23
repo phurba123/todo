@@ -40,7 +40,7 @@
                     <ul id="friendlist-scroller" class="list-group rounded text-center">
                         <!-- iterate over myFriends to display their names in list -->
                         <div *ngIf="myFriends">
-                                <li *ngFor="let friend of myFriends" class="list-group-item bg-info">{{friend.friendName}}</li>
+                                <li *ngFor="let friend of myFriends" class="list-group-item bg-info" (click)="friendClicked(friend)">{{friend.friendName}}</li>
                         </div>
                         
 

@@ -1,23 +1,50 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
-    <a class="navbar-brand font-weight-bold">ToDo</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="myNavbar">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link" [routerLink]="['/user']">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="[userDetails.userId,'friends']">Friends</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['allusers']">AllUsers</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<!-- if friend is not selected than display this nav -->
+<div *ngIf="friendDetails.isFriendSelected==false">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
+        <a class="navbar-brand font-weight-bold">ToDo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar"
+            aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" [routerLink]="['/user']">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="[userDetails.userId,'friends']">Friends</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['allusers']">AllUsers</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<!-- if friend is selected,than display this navbar -->
+<div *ngIf="friendDetails.isFriendSelected==true">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
+        <a class="navbar-brand font-weight-bold">ToDo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar"
+            aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="navbar-nav ml-auto">
+
+                <li class="nav-item active">
+                    <a class="nav-link">FriendDashboard<span class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item ">
+                    <a class="nav-link" type="button" (click)="goBackFromFriendDashboard()">Back </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
 <!-- end of navigation -->
 
 <div class="container-fluid mt-1">
@@ -29,7 +56,9 @@
             <button type="button" class="btn btn-info btn-circle" title="add new list" data-toggle="collapse"
                 data-target="#inputNewList" aria-expanded="false" aria-controls="inputNewList">
                 <i class="fas fa-plus"></i></button>
-            <p class="mt-2 text-justify text-success " id="todolistHint">Your list of ToDo's</p>
+            <p *ngIf="friendDetails.isFriendSelected==true">{{friendDetails.friendName}}'s ToDo's</p>
+            <p *ngIf="friendDetails.isFriendSelected==false" class="mt-2 text-justify text-success " id="todolistHint">
+                Your list of ToDo's</p>
 
             <ul class="list-unstyled" id="todoScroller">
 
@@ -166,16 +195,20 @@
                                     <div *ngIf="subitems.itemId==item.itemId" class="list-group-item">
 
                                         <!-- when subitem item id is equal to current item id ,iterate over subitems to get title -->
-                                        <div *ngFor = "let subitem of subitems.subItems ">
-                                                <i class="text-danger">{{subitem.subItemTitle}}<a class="dropdown-toggle text-secondary" type="button"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-                                                    <div class="dropdown-menu bg-secondary">
-                                                            <a class="dropdown-item text-info" type="button" (click)="editSubItem(subitem,item)">Edit</a>
-                                                            <a class="dropdown-item text-danger" type="button" (click)="deleteSubItem(subitem,item)">Delete</a>
-                                                    </div>
-                                                </i>
+                                        <div *ngFor="let subitem of subitems.subItems ">
+                                            <i class="text-danger">{{subitem.subItemTitle}}<a
+                                                    class="dropdown-toggle text-secondary" type="button"
+                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false"></a>
+                                                <div class="dropdown-menu bg-secondary">
+                                                    <a class="dropdown-item text-info" type="button"
+                                                        (click)="editSubItem(subitem,item)">Edit</a>
+                                                    <a class="dropdown-item text-danger" type="button"
+                                                        (click)="deleteSubItem(subitem,item)">Delete</a>
+                                                </div>
+                                            </i>
                                         </div>
-                                        
+
                                     </div>
                                 </ul>
                             </div>
@@ -266,7 +299,8 @@
             </div>
             <!-- start of modal body -->
             <div class="modal-body">
-                <input type="text" class="form-control" [(ngModel)]="itemEditTitle" name="itemEditTitle" placeholder="edit Item">
+                <input type="text" class="form-control" [(ngModel)]="itemEditTitle" name="itemEditTitle"
+                    placeholder="edit Item">
             </div>
             <!-- end of modal body -->
 
@@ -282,30 +316,32 @@
 </div>
 <!-- modal for adding subitem -->
 <div class="modal" id="addsubitem" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <!-- modal header -->
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title">Add SubItem</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <!-- end of modal header -->
-                </div>
-                <!-- start of modal body -->
-                <div class="modal-body">
-                    <input type="text" class="form-control" [(ngModel)]="newSubItemTitle" name="newSubItemTitle" placeholder="subitem title">
-                </div>
-                <!-- end of modal body -->
-    
-                <!-- start of modal footer -->
-                <div class="modal-footer">
-                    <!-- button to dismiss modal -->
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <!-- button to delete list -->
-                    <button type="button" class="btn btn-danger" (click)="addSubItem(selectedItemOfList)" data-dismiss="modal">Add</button>
-                </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- modal header -->
+            <div class="modal-header bg-info">
+                <h5 class="modal-title">Add SubItem</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <!-- end of modal header -->
+            </div>
+            <!-- start of modal body -->
+            <div class="modal-body">
+                <input type="text" class="form-control" [(ngModel)]="newSubItemTitle" name="newSubItemTitle"
+                    placeholder="subitem title">
+            </div>
+            <!-- end of modal body -->
+
+            <!-- start of modal footer -->
+            <div class="modal-footer">
+                <!-- button to dismiss modal -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- button to delete list -->
+                <button type="button" class="btn btn-danger" (click)="addSubItem(selectedItemOfList)"
+                    data-dismiss="modal">Add</button>
             </div>
         </div>
     </div>
+</div>
 <!-- end of modal to delete item -->

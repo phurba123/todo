@@ -16,7 +16,8 @@ export class FriendsComponent implements OnInit {
 
   constructor(
     private route:ActivatedRoute,
-    private appService:AppService
+    private appService:AppService,
+    private router:Router
   ) { }
 
   ngOnInit() {
@@ -45,6 +46,28 @@ export class FriendsComponent implements OnInit {
         }
       );
     }
+  }//
+
+  //friend is selected from friend list
+  public friendClicked(friend)
+  {
+    // console.log(friend)
+
+    //first,delete friendInfo from local storage and set new
+    this.appService.deleteFriendInfo();
+
+    //set new friendinfo
+    let friendInfo=
+    {
+      isFriendSelected:true,
+      friendId:friend.friendId,
+      friendName:friend.friendName
+    }
+    
+    this.appService.setFriendInfo(friendInfo);
+
+    //than navigate to user component displaying friends data
+    this.router.navigate(['/user']);
   }
 
 }

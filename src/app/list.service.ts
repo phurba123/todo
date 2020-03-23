@@ -19,15 +19,17 @@ export class ListService {
   ) { }
 
   /**Services related to list */
-  public getAllListOfUser(authToken) {
-    return this.http.get(`${this.listBackendUrl}/view/all?authToken=${authToken}`)
+  public getAllListOfUser(authToken,userId) {
+    return this.http.get(`${this.listBackendUrl}/${userId}/view/all?authToken=${authToken}`)
   }
 
   //create new list
-  public createNewList(listTitle, authToken) {
+  public createNewList(listTitle, authToken,listCreatorId,userId) {
     const params = new HttpParams()
       .set('listTitle', listTitle)
       .set('authToken', authToken)
+      .set('listCreatorId',listCreatorId)
+      .set('userId',userId)
 
     return this.http.post(`${this.listBackendUrl}/create`, params);
   }

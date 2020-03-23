@@ -60,6 +60,14 @@ export class SignInComponent implements OnInit {
           //console.log(data);
           console.log(apiResponse['data'])
           this.appService.setUserInfo(data);
+
+          //set friend info,for determining if friend is selected or not,uses in usercomponent
+          let frienddata=
+          {
+            isFriendSelected:false,
+            friendId:''  
+          }
+          this.appService.setFriendInfo(frienddata);
           //on successfull sign in ,navigate to user dashboard
           setTimeout(()=>
           {

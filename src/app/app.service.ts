@@ -110,4 +110,22 @@ export class AppService {
   {
    return JSON.parse(localStorage.getItem('userInfo'));
   }
+
+  //setting friend info
+  public setFriendInfo(friendInfo)
+  {
+    localStorage.setItem('friendInfo',JSON.stringify(friendInfo))
+  }
+
+  //getting friend info
+  public getFriendInfo()
+  {
+    return JSON.parse(localStorage.getItem('friendInfo'))
+  }
+
+  //delete friend info
+  public deleteFriendInfo()
+  {
+    localStorage.removeItem('friendInfo');
+  }
 }
