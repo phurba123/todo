@@ -301,8 +301,8 @@ export class UserComponent implements OnInit {
 
           //subitem is deleted ,but remove it from subitem array temporarily to refresh the page
           //console.log(this.subItemsOfItem[0])
-          this.subItemsOfItem[0].subItems.map((subitem, index) => {
-            if (subitem.subItemId === subitem.subItemId) {
+          this.subItemsOfItem[0].subItems.map((currentsubitem, index) => {
+            if (currentsubitem.subItemId === subitem.subItemId) {
               //removing currently deleted subitem from subitems array using slice method of array
               this.subItemsOfItem[0].subItems.splice(index, 1);
             }
