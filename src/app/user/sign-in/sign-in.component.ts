@@ -58,7 +58,6 @@ export class SignInComponent implements OnInit {
             'authToken':apiResponse['data']['authToken']
           }
           //console.log(data);
-          console.log(apiResponse['data'])
           this.appService.setUserInfo(data);
 
           //set friend info,for determining if friend is selected or not,uses in usercomponent
@@ -72,7 +71,7 @@ export class SignInComponent implements OnInit {
           setTimeout(()=>
           {
             this.router.navigate(['user'])
-          })
+          },1000)
         }
         else
         {

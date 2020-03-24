@@ -7,6 +7,8 @@ import { UserComponent } from './dashboard/user/user.component';
 import { FriendsComponent } from './dashboard/friends/friends.component';
 import { AllusersComponent } from './dashboard/allusers/allusers.component';
 import { FriendRequestsComponent } from './dashboard/friend-requests/friend-requests.component';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
+import { ServerErrorComponent } from './errors/server-error/server-error.component';
 
 
 const routes: Routes = [
@@ -17,7 +19,10 @@ const routes: Routes = [
   {path:'user',component:UserComponent},
   {path:'user/:userId/friends',component:FriendsComponent},
   {path:'user/allusers',component:AllusersComponent},
-  {path:'user/friendrequests',component:FriendRequestsComponent}
+  {path:'user/friendrequests',component:FriendRequestsComponent},
+
+  {path:'error/server',component:ServerErrorComponent},
+  {path:'**',component:NotFoundComponent}
 ];
 
 @NgModule({

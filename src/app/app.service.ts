@@ -35,6 +35,14 @@ export class AppService {
     return this.http.post(`${this.userBackendUrl}/signin`, params);
   }//end of signIn
 
+  //signout
+  public signout(authToken){
+    const params = new HttpParams()
+    .set('authToken',authToken)
+
+    return this.http.post(`${this.userBackendUrl}/signout`,params);
+  }
+
   //getting all users
   public getAllUsers(authToken)
   {
@@ -109,6 +117,12 @@ export class AppService {
   public getUserInfo()
   {
    return JSON.parse(localStorage.getItem('userInfo'));
+  }
+
+  //delete userInfo
+  public deleteUserInfo()
+  {
+    localStorage.removeItem('userInfo')
   }
 
   //setting friend info

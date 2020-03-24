@@ -9,6 +9,7 @@ import { ToastrModule } from 'ngx-toastr'
 import { DashboardModule } from './dashboard/dashboard.module';
 import {CookieService} from 'ngx-cookie-service'
 import { ListService } from './list.service';
+import { ErrorsModule } from './errors/errors.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ListService } from './list.service';
     BrowserAnimationsModule,
     UserModule,
     DashboardModule,
+    ErrorsModule,
     HttpClientModule,
     ToastrModule.forRoot({
       timeOut: 1500,

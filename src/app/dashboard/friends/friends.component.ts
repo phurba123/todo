@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router,ActivatedRoute} from '@angular/router'
 import { AppService } from 'src/app/app.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-friends',
@@ -17,7 +18,8 @@ export class FriendsComponent implements OnInit {
   constructor(
     private route:ActivatedRoute,
     private appService:AppService,
-    private router:Router
+    private router:Router,
+    private toastr:ToastrService
   ) { }
 
   ngOnInit() {
@@ -69,5 +71,28 @@ export class FriendsComponent implements OnInit {
     //than navigate to user component displaying friends data
     this.router.navigate(['/user']);
   }
+
+  //logging out
+  public logout()
+  {
+    this.appService.signout(this.myAuthToken).subscribe(
+      (apiresponse)=>
+      {
+        if(apiresponse['status']===200)
+        {
+          this.toastr.success('Logged Out');
+          //delete local storages
+          this.appService.deleteFriendInfo();
+          this.appService.deleteUserInfo();
+
+          //navigate to signin page
+          setTimeout(()=>
+          {
+            this.router.navigate(['/'])
+          },1000)
+        }
+      }
+    )
+  }//end of logout
 
 }

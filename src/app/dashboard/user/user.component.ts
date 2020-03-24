@@ -39,9 +39,10 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     this.userDetails = this.appService.getUserInfo();
-    this.friendDetails=this.appService.getFriendInfo();
     this.myauthToken = this.userDetails.authToken;
+    this.friendDetails=this.appService.getFriendInfo();
     console.log('userDetails', this.userDetails)
+    console.log('authtoken : ',this.myauthToken)
 
     this.validateUser()
     
@@ -440,6 +441,29 @@ export class UserComponent implements OnInit {
         console.log(err)
       }
     )
-  }
+  }//end of marking item as done and undone
+
+  //logging out
+  public logout()
+  {
+    this.appService.signout(this.myauthToken).subscribe(
+      (apiresponse)=>
+      {
+        if(apiresponse['status']===200)
+        {
+          this.toastr.success('Logged Out');
+          //delete local storages
+          this.appService.deleteFriendInfo();
+          this.appService.deleteUserInfo();
+
+          //navigate to signin page
+          setTimeout(()=>
+          {
+            this.router.navigate(['/'])
+          },1000)
+        }
+      }
+    )
+  }//end of logout
 
 }
