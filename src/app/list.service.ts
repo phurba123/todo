@@ -88,6 +88,18 @@ export class ListService {
     return this.http.put(`${this.itemBaseUrl}/${data.itemId}/editItemTitle`,params);
   }
 
+  //marking item as done and undone
+  public markItem(data)
+  {
+    console.log('type : ',typeof(data.isDone))
+    console.log('inside service : ',data)
+    const params = new HttpParams()
+    .set('authToken',data.authToken)
+    .set('isDone',data.isDone)
+
+    return this.http.put(`${this.itemBaseUrl}/${data.itemId}/markitem`,params);
+  }
+
   /**End of services related to item in a list */
 
   /**Services related to subitems */
@@ -116,6 +128,18 @@ export class ListService {
     .set('itemId',data.itemId)
 
     return this.http.post(`${this.subitemBaseUrl}/${data.subItemId}/delete`,params)
+  }//end of delting subitem
+
+  //edit subitem
+  public editSubItem(data)
+  {
+    const params = new HttpParams()
+    .set('authToken',data.authToken)
+    .set('subItemTitle',data.subItemTitle)
+    .set('modifierId',data.modifierId)
+    .set('itemId',data.itemId)
+
+    return this.http.put(`${this.subitemBaseUrl}/${data.subItemId}/edit`,params)
   }
 
   //**End of services related to subitems */

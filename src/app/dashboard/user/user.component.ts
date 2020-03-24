@@ -23,6 +23,8 @@ export class UserComponent implements OnInit {
   public itemEditTitle: string;//for editing the title of an item
   public subItemsOfItem: any[] = [];
   public newSubItemTitle: any;
+  public editSubItemTitle;
+  public currentSubItem:any;
 
   public userDetails: any;
   public friendDetails:any;
@@ -312,9 +314,36 @@ export class UserComponent implements OnInit {
 
   //edit subitem
   public editSubItem(subitem, item) {
-    console.log(subitem)
+    console.log('subitem', subitem)
     console.log('item : ', item)
-  }
+
+    //modifier will be the account user only,
+    let data=
+    {
+      subItemId:subitem.subItemId,
+      modifierId:this.userDetails.userId,
+      authToken:this.myauthToken,
+      subItemTitle:this.editSubItemTitle,
+      itemId:item.itemId
+    }
+    console.log('data',data)
+
+    this.listService.editSubItem(data).subscribe(
+      (apiresponse)=>
+      {
+        console.log('apiresponse',apiresponse)
+        if(apiresponse['status']===200)
+        {
+          this.getSubItems(this.selectedList)
+          this.toastr.success('subitem edited');
+        }
+      },
+      (err)=>
+      {
+        console.log(err)
+      }
+    )
+  }//end of edit subitem
 
   //delete subitem
   public deleteSubItem(subitem, item) {
@@ -369,6 +398,48 @@ export class UserComponent implements OnInit {
     //after deleting friend info navigate to home component,than,my details will show
     this.location.back();
 
+  }
+
+  public setSelectedSubItem(subitem)
+  {
+    this.currentSubItem=subitem;
+  }
+
+  //marking item for done and undone
+  public markItem(item)
+  {
+    //console.log('item : ',item)
+    let itemDone = !item.itemDone;
+    let data =
+    {
+      itemId:item.itemId,
+      isDone:itemDone,
+      authToken:this.myauthToken
+    }
+
+    //console.log('data : ',data)
+
+    this.listService.markItem(data).subscribe(
+      (apiresponse)=>
+      {
+        console.log(this.selectedList.items)
+        //this.getSingleList(this.selectedList.listId)
+        //make change to selected list temporaily to reflect change in data
+        this.selectedList.items.map((singleItem)=>
+        {
+          if(singleItem.itemId === item.itemId)
+          {
+            console.log('hey')
+            console.log('itemdone : ',itemDone)
+            singleItem.itemDone=itemDone
+          }
+        })
+      },
+      (err)=>
+      {
+        console.log(err)
+      }
+    )
   }
 
 }
