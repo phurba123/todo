@@ -19,7 +19,7 @@ export class AllusersComponent implements OnInit {
   constructor(
     private appService: AppService,
     private toastr: ToastrService,
-    private router:Router
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -48,7 +48,7 @@ export class AllusersComponent implements OnInit {
         }
       },
       (err) => {
-        this.toastr.error(err.error.message)
+        this.router.navigate(['/error/server'])
       }
     )
   }
@@ -63,13 +63,12 @@ export class AllusersComponent implements OnInit {
           this.removeMeFromAllUsers(this.allUsers)
         }
         else {
-          //handle this later
-          // console.log(apiResponse)
+          this.toastr.warning(apiResponse['message'])
         }
 
       },
       (err) => {
-        console.log(err)
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of getting allUsers
@@ -155,7 +154,7 @@ export class AllusersComponent implements OnInit {
         }
       },
       (err) => {
-        this.toastr.error(err.error.message)
+        this.router.navigate(['/error/server'])
       }
     )
   }
@@ -184,6 +183,12 @@ export class AllusersComponent implements OnInit {
             this.router.navigate(['/'])
           }, 1000)
         }
+        else {
+          this.toastr.warning(apiresponse['message'])
+        }
+      },
+      (err) => {
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of logout

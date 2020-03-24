@@ -91,6 +91,10 @@ export class FriendsComponent implements OnInit {
             this.router.navigate(['/'])
           },1000)
         }
+      },
+      (err)=>
+      {
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of logout

@@ -16,7 +16,7 @@ export class FriendRequestsComponent implements OnInit {
   constructor(
     private appService: AppService,
     private toastr: ToastrService,
-    private router:Router
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -29,14 +29,20 @@ export class FriendRequestsComponent implements OnInit {
   public getAllMyFriendRequests() {
     this.appService.getFriendRequests(this.userDetail.userId, this.myAuthToken).subscribe(
       (apiResponse) => {
-        //console.log(apiResponse)
-        this.myFriendRequests = (apiResponse['data']['friendRequestReceived'])
+        if (apiResponse['status'] === 200) {
+          //console.log(apiResponse)
+          this.myFriendRequests = (apiResponse['data']['friendRequestReceived'])
 
-        //set status of friend request as not accepted
-        this.setStatusOfRequestNotAccepted(this.myFriendRequests)
+          //set status of friend request as not accepted
+          this.setStatusOfRequestNotAccepted(this.myFriendRequests)
+        }
+        else {
+          this.toastr.warning(apiResponse['message'])
+        }
+
       },
       (err) => {
-        console.log(err)
+        this.router.navigate(['/error/server'])
       }
     )
   }
@@ -72,6 +78,12 @@ export class FriendRequestsComponent implements OnInit {
           //set this request status to accepted
           this.setRequestToAccepted(sender)
         }
+        else {
+          this.toastr.warning(apiresponse['message'])
+        }
+      },
+      (err) => {
+        this.router.navigate(['/error/server'])
       }
     )
   }
@@ -100,6 +112,12 @@ export class FriendRequestsComponent implements OnInit {
             this.router.navigate(['/'])
           }, 1000)
         }
+        else {
+          this.toastr.warning(apiresponse['message'])
+        }
+      },
+      (err) => {
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of logout

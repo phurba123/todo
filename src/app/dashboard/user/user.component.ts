@@ -69,7 +69,7 @@ export class UserComponent implements OnInit {
         }
       },
       (err) => {
-        console.log(err)
+        this.router.navigate(['/error/server'])
       }
     )
   }
@@ -102,8 +102,7 @@ export class UserComponent implements OnInit {
           }
         },
         (err) => {
-          console.log(err)
-          this.toastr.error(err.error.message)
+          this.router.navigate(['/error/server'])
         }
       )
     }
@@ -121,7 +120,7 @@ export class UserComponent implements OnInit {
           console.log('selectedList', this.selectedList)
         },
         (err) => {
-          console.log(err);
+          this.router.navigate(['/error/server'])
         }
       )
     }
@@ -172,7 +171,7 @@ export class UserComponent implements OnInit {
             },
             (err) => {
               //redirect to internal error
-              console.log(err)
+              this.router.navigate(['/error/server'])
             }
           )
       }
@@ -200,7 +199,7 @@ export class UserComponent implements OnInit {
           }
         },
         (err) => {
-
+          this.router.navigate(['/error/server'])
         }
       );
     }
@@ -276,7 +275,7 @@ export class UserComponent implements OnInit {
           }
         },
         (err) => {
-          console.log(err)
+          this.router.navigate(['/error/server'])
         }
       );
     }
@@ -341,7 +340,7 @@ export class UserComponent implements OnInit {
       },
       (err)=>
       {
-        console.log(err)
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of edit subitem
@@ -374,7 +373,7 @@ export class UserComponent implements OnInit {
         }
       },
       (err) => {
-        console.log(err)
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of delete of subitems
@@ -438,7 +437,7 @@ export class UserComponent implements OnInit {
       },
       (err)=>
       {
-        console.log(err)
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of marking item as done and undone
@@ -462,6 +461,14 @@ export class UserComponent implements OnInit {
             this.router.navigate(['/'])
           },1000)
         }
+        else
+        {
+          this.toastr.warning(apiresponse['message'])
+        }
+      },
+      (err)=>
+      {
+        this.router.navigate(['/error/server'])
       }
     )
   }//end of logout

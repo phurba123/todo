@@ -41,6 +41,13 @@ export class AppService {
     .set('authToken',authToken)
 
     return this.http.post(`${this.userBackendUrl}/signout`,params);
+  }//end of signout
+
+  //resetting password
+  public forgotPassword(email)
+  {
+    let data={};
+    return this.http.post(`${this.userBackendUrl}/${email}/forgotpassword`,data)
   }
 
   //getting all users
