@@ -168,29 +168,4 @@ export class AllusersComponent implements OnInit {
     })
   }
 
-  //logging out
-  public logout() {
-    this.appService.signout(this.myAuthToken).subscribe(
-      (apiresponse) => {
-        if (apiresponse['status'] === 200) {
-          this.toastr.success('Logged Out');
-          //delete local storages
-          this.appService.deleteFriendInfo();
-          this.appService.deleteUserInfo();
-
-          //navigate to signin page
-          setTimeout(() => {
-            this.router.navigate(['/'])
-          }, 1000)
-        }
-        else {
-          this.toastr.warning(apiresponse['message'])
-        }
-      },
-      (err) => {
-        this.router.navigate(['/error/server'])
-      }
-    )
-  }//end of logout
-
 }

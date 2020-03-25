@@ -1,30 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary ">
-    <a class="navbar-brand font-weight-bold">ToDo</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="myNavbar">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/user']">Home</a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" type="button" [routerLink]="['/user',userDetail.userId,'friends']">Friends</a>
-            </li>
-
-            <li class="nav-item active">
-                <a class="nav-link" type="button">FriendRequests<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/user/allusers']">AllUsers</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" type="button" (click)="logout()" >Logout</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<app-nav-bar [component]="'friendRequests'"></app-nav-bar>
 <!-- end of navigation -->
 
 <!-- showing friends requests received -->
@@ -34,7 +8,7 @@
         <div class="col-md-4">
 
             <!-- if there is no friend request received then display this -->
-            <div *ngIf="myFriendRequests.length===0">
+            <div *ngIf="!myFriendRequests">
                 <p class="text-justify text-danger">
                     Currently there is no friend requests for you
                 </p>
@@ -42,7 +16,7 @@
             <!-- end of div if no friend request is present -->
 
             <!-- if there is friend request available then display this -->
-            <div *ngIf="myFriendRequests.length>0">
+            <div *ngIf="myFriendRequests">
                 <h5 class="text-info"> You have a friend request</h5><br>
                 <div *ngFor="let request of myFriendRequests">
                     <ul class="list-group">

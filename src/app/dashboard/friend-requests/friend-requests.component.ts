@@ -34,7 +34,15 @@ export class FriendRequestsComponent implements OnInit {
           this.myFriendRequests = (apiResponse['data']['friendRequestReceived'])
 
           //set status of friend request as not accepted
-          this.setStatusOfRequestNotAccepted(this.myFriendRequests)
+          console.log('myfriend : ',this.myFriendRequests);
+          
+          if(this.myFriendRequests)
+          {
+            //console.log(this.myFriendRequests.length)
+
+            //setting status as notaccepted for all friend requests present,if present
+            this.setStatusOfRequestNotAccepted(this.myFriendRequests)
+          }
         }
         else {
           this.toastr.warning(apiResponse['message'])
@@ -96,30 +104,5 @@ export class FriendRequestsComponent implements OnInit {
       }
     })
   }//end of setting request to accepted
-
-  //logging out
-  public logout() {
-    this.appService.signout(this.myAuthToken).subscribe(
-      (apiresponse) => {
-        if (apiresponse['status'] === 200) {
-          this.toastr.success('Logged Out');
-          //delete local storages
-          this.appService.deleteFriendInfo();
-          this.appService.deleteUserInfo();
-
-          //navigate to signin page
-          setTimeout(() => {
-            this.router.navigate(['/'])
-          }, 1000)
-        }
-        else {
-          this.toastr.warning(apiresponse['message'])
-        }
-      },
-      (err) => {
-        this.router.navigate(['/error/server'])
-      }
-    )
-  }//end of logout
 
 }

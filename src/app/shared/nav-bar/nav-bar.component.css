@@ -1,0 +1,13 @@
+
+.dropdown-notification
+{
+    width: 20vw;
+    overflow-y:scroll;
+    max-height: 40vh
+}
+
+@media only screen and (max-width:575px) {
+    .dropdown-notification{
+        width: 100%
+    }
+}

@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { FriendsComponent } from './friends/friends.component';
 import { AllusersComponent } from './allusers/allusers.component';
 import { FriendRequestsComponent } from './friend-requests/friend-requests.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -14,7 +15,8 @@ import { FriendRequestsComponent } from './friend-requests/friend-requests.compo
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ]
 })
 export class DashboardModule { }

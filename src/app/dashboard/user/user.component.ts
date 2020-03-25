@@ -5,6 +5,7 @@ import { AppService } from 'src/app/app.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common'
 import { SocketService } from 'src/app/socket.service';
+import { HistoryService } from 'src/app/history.service';
 
 @Component({
   selector: 'app-user',
@@ -36,7 +37,8 @@ export class UserComponent implements OnInit {
     private appService: AppService,
     private router: Router,
     private location: Location,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private historyService :HistoryService
   ) { }
 
   ngOnInit() {
@@ -126,18 +128,30 @@ export class UserComponent implements OnInit {
         (apiResponse) => {
           if (apiResponse['status'] === 200) {
             this.toastr.success('List Created');
-            console.log(apiResponse)
+            //console.log(apiResponse)
             this.newListTitle = "";//clearing input text after adding new list;
             this.allList.push(apiResponse['data']);
 
             //if friend list is being added ,notify that friend
             if (currentUserId != this.userDetails.userId) {
+              let historydata =
+              {
+                userId:currentUserId,
+                category:'list-add',
+                message:`${this.userDetails.userName} has added a new list to your list's`,
+                listId:apiResponse['data']['listId'],
+                authToken:this.myauthToken
+              }
+              //save on history
+              this.saveHistory(historydata);
+
               let data =
               {
                 friendId: currentUserId,
                 message: `${this.userDetails.userName} has added a new list to your list's`,
                 friendEmail: this.friendDetails.friendEmail,
-                friendName: this.friendDetails.friendName
+                friendName: this.friendDetails.friendName,
+                
               }
 
               this.socketService.notifyUpdates(data)
@@ -150,6 +164,24 @@ export class UserComponent implements OnInit {
       )
     }
   }//end of adding new list
+
+  //save on history
+  public saveHistory(data)
+  {
+    this.historyService.addHistory(data).subscribe(
+      (apiresponse)=>
+      {
+        if(apiresponse['status']===200)
+        {
+          console.log(' : ',apiresponse)
+        }
+      },
+      (err)=>
+      {
+        //
+      }
+    )
+  }
 
   //gets called when user click on any list
   public getSingleList(listId) {
@@ -200,7 +232,7 @@ export class UserComponent implements OnInit {
           .subscribe(
             (apiResponse) => {
               if (apiResponse['status'] === 200) {
-                //console.log(apiResponse);
+                console.log(apiResponse);
 
                 //recalling getSingleList after adding a new item to get it reflected on a view
                 this.getSingleList(this.selectedList.listId);
@@ -210,6 +242,21 @@ export class UserComponent implements OnInit {
 
                 //if new item is being added on friends list,than update friend
                 if (this.friendDetails.isFriendSelected) {
+
+                  //saving history
+                  let historydata =
+                  {
+                    userId:this.friendDetails.friendId,
+                    category:'item-add',
+                    message:`${this.userDetails.userName} has added a new item to your list's`,
+                    listId:this.selectedList.listId,
+                    itemId:apiResponse['data']['itemId'],
+                    authToken:this.myauthToken
+                  }
+                  console.log('historydata : ',historydata);
+                  //save on history
+                  this.saveHistory(historydata);
+                  
                   let data =
                   {
                     friendId: this.friendDetails.friendId,
@@ -253,6 +300,19 @@ export class UserComponent implements OnInit {
 
             //notify if friends list is being edited
             if (this.friendDetails.isFriendSelected) {
+
+              //save history
+              let historydata =
+              {
+                userId:this.friendDetails.friendId,
+                category:'list-edit',
+                message:`${this.userDetails.userName} has edited your list`,
+                authToken:this.myauthToken
+              }
+              //console.log('historydata : ',historydata);
+              //save on history
+              this.saveHistory(historydata);
+
               let data =
               {
                 friendId: this.friendDetails.friendId,
@@ -283,6 +343,19 @@ export class UserComponent implements OnInit {
 
             //notify if friend list is being deleted
             if (this.friendDetails.isFriendSelected) {
+
+              //save history
+              let historydata =
+              {
+                userId:this.friendDetails.friendId,
+                category:'list-delete',
+                message:`${this.userDetails.userName} has deleted a list on your list's`,
+                listId:this.selectedList.listId,
+                authToken:this.myauthToken
+              }
+              console.log('historydata : ',historydata);
+              //save on history
+              this.saveHistory(historydata);
               let data =
               {
                 friendId: this.friendDetails.friendId,
@@ -323,6 +396,19 @@ export class UserComponent implements OnInit {
             if (apiResponse['status'] === 200) {
               //notify friend if friend item is deleted
               if (this.friendDetails.isFriendSelected) {
+
+                //save history
+                let historydata =
+                {
+                  userId:this.friendDetails.friendId,
+                  category:'item-delete',
+                  message:`${this.userDetails.userName} has deleted a item your list's`,
+                  listId:this.selectedList.listId,
+                  authToken:this.myauthToken
+                }
+                console.log('historydata : ',historydata);
+                //save on history
+                this.saveHistory(historydata);
                 let data =
                 {
                   friendId: this.friendDetails.friendId,
@@ -363,6 +449,19 @@ export class UserComponent implements OnInit {
 
             //notify friend if friend item is edited
             if (this.friendDetails.isFriendSelected) {
+
+              //save history
+              let historydata =
+              {
+                userId:this.friendDetails.friendId,
+                category:'item-edit',
+                message:`${this.userDetails.userName} has edited item on your list's`,
+                listId:this.selectedList.listId,
+                authToken:this.myauthToken
+              }
+              console.log('historydata : ',historydata);
+              //save on history
+              this.saveHistory(historydata);
               let data =
               {
                 friendId: this.friendDetails.friendId,
@@ -411,6 +510,18 @@ export class UserComponent implements OnInit {
 
           //notify if friends subitem is being added
           if (this.friendDetails.isFriendSelected) {
+
+            //save history
+            let historydata =
+            {
+              userId:this.friendDetails.friendId,
+              category:'subitem-add',
+              message:`${this.userDetails.userName} has added subitem on your list's`,
+              listId:this.selectedList.listId,
+              authToken:this.myauthToken
+            }
+            console.log('historydata : ',historydata);
+            //save on history
             let data =
             {
               friendId: this.friendDetails.friendId,
@@ -452,6 +563,18 @@ export class UserComponent implements OnInit {
 
           //notify if friends subitem is being edited
           if (this.friendDetails.isFriendSelected) {
+
+            //save history
+            let historydata =
+            {
+              userId:this.friendDetails.friendId,
+              category:'subitem-edit',
+              message:`${this.userDetails.userName} has edited subitem on your list's`,
+              listId:this.selectedList.listId,
+              authToken:this.myauthToken
+            }
+            console.log('historydata : ',historydata);
+            //save on history
             let data =
             {
               friendId: this.friendDetails.friendId,
@@ -497,6 +620,18 @@ export class UserComponent implements OnInit {
 
           //notify if friends subitem is being deleted
           if (this.friendDetails.isFriendSelected) {
+
+            //save history
+            let historydata =
+            {
+              userId:this.friendDetails.friendId,
+              category:'subitem-delete',
+              message:`${this.userDetails.userName} has deleted subitem on your list's`,
+              listId:this.selectedList.listId,
+              authToken:this.myauthToken
+            }
+            console.log('historydata : ',historydata);
+            //save on history
             let data =
             {
               friendId: this.friendDetails.friendId,
@@ -513,27 +648,6 @@ export class UserComponent implements OnInit {
       }
     )
   }//end of delete of subitems
-
-  /** if iam currently on friend dashboard,than by clicking home button i will go to my dashboard by clearing 
-  currently selected friend from local storage*/
-
-  public goBackFromFriendDashboard() {
-    console.log('inside')
-    //reset friendinfo from local storage
-    this.appService.deleteFriendInfo();
-
-    let friendInfo =
-    {
-      isFriendSelected: false,
-      friendId: '',
-      friendName: ''
-    }
-    this.appService.setFriendInfo(friendInfo)
-
-    //after deleting friend info navigate to home component,than,my details will show
-    this.location.back();
-
-  }
 
   public setSelectedSubItem(subitem) {
     this.currentSubItem = subitem;
@@ -570,30 +684,5 @@ export class UserComponent implements OnInit {
       }
     )
   }//end of marking item as done and undone
-
-  //logging out
-  public logout() {
-    this.appService.signout(this.myauthToken).subscribe(
-      (apiresponse) => {
-        if (apiresponse['status'] === 200) {
-          this.toastr.success('Logged Out');
-          //delete local storages
-          this.appService.deleteFriendInfo();
-          this.appService.deleteUserInfo();
-
-          //navigate to signin page
-          setTimeout(() => {
-            this.router.navigate(['/'])
-          }, 1000)
-        }
-        else {
-          this.toastr.warning(apiresponse['message'])
-        }
-      },
-      (err) => {
-        this.router.navigate(['/error/server'])
-      }
-    )
-  }//end of logout
 
 }

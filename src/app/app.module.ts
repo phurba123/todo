@@ -11,6 +11,8 @@ import {CookieService} from 'ngx-cookie-service'
 import { ListService } from './list.service';
 import { ErrorsModule } from './errors/errors.module';
 import { SocketService } from './socket.service';
+import { SharedModule } from './shared/shared.module';
+import { HistoryService } from './history.service';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,7 @@ import { SocketService } from './socket.service';
     BrowserAnimationsModule,
     UserModule,
     DashboardModule,
+    SharedModule,
     ErrorsModule,
     HttpClientModule,
     ToastrModule.forRoot({
@@ -30,7 +33,7 @@ import { SocketService } from './socket.service';
       preventDuplicates: true,
     })
   ],
-  providers: [CookieService,ListService,SocketService],
+  providers: [CookieService,ListService,SocketService,HistoryService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
