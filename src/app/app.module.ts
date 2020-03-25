@@ -10,6 +10,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import {CookieService} from 'ngx-cookie-service'
 import { ListService } from './list.service';
 import { ErrorsModule } from './errors/errors.module';
+import { SocketService } from './socket.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { ErrorsModule } from './errors/errors.module';
       preventDuplicates: true,
     })
   ],
-  providers: [CookieService,ListService],
+  providers: [CookieService,ListService,SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

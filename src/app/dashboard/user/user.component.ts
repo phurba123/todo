@@ -3,13 +3,14 @@ import { ListService } from 'src/app/list.service';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/app.service';
 import { Router } from '@angular/router';
-import {Location} from '@angular/common'
+import { Location } from '@angular/common'
+import { SocketService } from 'src/app/socket.service';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
-  providers:[Location]
+  providers: [Location]
 })
 export class UserComponent implements OnInit {
   public myauthToken;
@@ -24,44 +25,75 @@ export class UserComponent implements OnInit {
   public subItemsOfItem: any[] = [];
   public newSubItemTitle: any;
   public editSubItemTitle;
-  public currentSubItem:any;
+  public currentSubItem: any;
 
   public userDetails: any;
-  public friendDetails:any;
+  public friendDetails: any;
 
   constructor(
     private listService: ListService,
     private toastr: ToastrService,
     private appService: AppService,
     private router: Router,
-    private location:Location
+    private location: Location,
+    private socketService: SocketService
   ) { }
 
   ngOnInit() {
     this.userDetails = this.appService.getUserInfo();
     this.myauthToken = this.userDetails.authToken;
-    this.friendDetails=this.appService.getFriendInfo();
+    this.friendDetails = this.appService.getFriendInfo();
     console.log('userDetails', this.userDetails)
-    console.log('authtoken : ',this.myauthToken)
+    console.log('authtoken : ', this.myauthToken);
 
-    this.validateUser()
-    
+    //socket event verifyUser
+    this.verifyUser();
+
+    this.validateUser();
+
+    //listen for updates
+    this.listenForUpdates();
+
   }
   //validate if friend  is selected or not
-  public validateUser()
-  {
-    if(this.friendDetails.isFriendSelected)
-    {
+  public validateUser() {
+    if (this.friendDetails.isFriendSelected) {
       this.getAllToDoListOfUser(this.friendDetails.friendId)
     }
-    else{
+    else {
       this.getAllToDoListOfUser(this.userDetails.userId);
     }
   }
 
+  //verify user
+  public verifyUser() {
+    let data =
+    {
+      userId: this.userDetails.userId,
+      authToken: this.myauthToken
+    }
+    this.socketService.verifyUser(data);
+    //listen for autherror,will get notified if authToken is invalid
+    this.socketService.listenForAuthError(this.userDetails.userId).subscribe((message) => {
+      this.toastr.error(message);
+    })
+  }//end of verifyUser
+
+  //listen for updates
+  public listenForUpdates() {
+    this.socketService.listenForUpdates(this.userDetails.userId).subscribe((message) => {
+      this.getAllToDoListOfUser(this.userDetails.userId);
+      if (this.selectedList) {
+        this.getSingleList(this.selectedList.listId);
+        //this.getSubItems(this.selectedList);
+      }
+      this.toastr.info(message);
+    })
+  }
+
   //getting all the list of current user
   public getAllToDoListOfUser(userId) {
-    this.listService.getAllListOfUser(this.myauthToken,userId).subscribe(
+    this.listService.getAllListOfUser(this.myauthToken, userId).subscribe(
       (apiResponse) => {
         if (apiResponse['status'] === 200) {
           this.allList = apiResponse['data'];
@@ -80,25 +112,36 @@ export class UserComponent implements OnInit {
       this.toastr.warning('Title is empty')
     }
     else {
-      let currentUserId="";//user id to whom this lists belongs to,
+      let currentUserId = "";//user id to whom this lists belongs to,
 
       //if new list is being created on friend lists,than
-      if(this.friendDetails.isFriendSelected)
-      {
+      if (this.friendDetails.isFriendSelected) {
         //if friend is selected,than this current lists belongs to that friend,but creator will be me
-        currentUserId=this.friendDetails.friendId;
+        currentUserId = this.friendDetails.friendId;
       }
-      else
-      {
-        currentUserId=this.userDetails.userId
+      else {
+        currentUserId = this.userDetails.userId
       }
-      this.listService.createNewList(this.newListTitle, this.myauthToken,this.userDetails.userId,currentUserId).subscribe(
+      this.listService.createNewList(this.newListTitle, this.myauthToken, this.userDetails.userId, currentUserId).subscribe(
         (apiResponse) => {
           if (apiResponse['status'] === 200) {
             this.toastr.success('List Created');
             console.log(apiResponse)
             this.newListTitle = "";//clearing input text after adding new list;
-            this.allList.push(apiResponse['data'])
+            this.allList.push(apiResponse['data']);
+
+            //if friend list is being added ,notify that friend
+            if (currentUserId != this.userDetails.userId) {
+              let data =
+              {
+                friendId: currentUserId,
+                message: `${this.userDetails.userName} has added a new list to your list's`,
+                friendEmail: this.friendDetails.friendEmail,
+                friendName: this.friendDetails.friendName
+              }
+
+              this.socketService.notifyUpdates(data)
+            }
           }
         },
         (err) => {
@@ -163,7 +206,20 @@ export class UserComponent implements OnInit {
                 this.getSingleList(this.selectedList.listId);
                 this.newItemTitle = "";//clearing text after adding item to list;
 
-                this.toastr.success('new item added')
+                this.toastr.success('new item added');
+
+                //if new item is being added on friends list,than update friend
+                if (this.friendDetails.isFriendSelected) {
+                  let data =
+                  {
+                    friendId: this.friendDetails.friendId,
+                    message: `${this.userDetails.userName} has added a new item to your list`,
+                    friendEmail: this.friendDetails.friendEmail,
+                    friendName: this.friendDetails.friendName
+                  }
+
+                  this.socketService.notifyUpdates(data);
+                }
               }
               else {
                 this.toastr.error(apiResponse['message'])
@@ -195,6 +251,18 @@ export class UserComponent implements OnInit {
             this.getSingleList(this.selectedList.listId);
             this.newEditListTitle = "";//cleart edit text box after updating list title
 
+            //notify if friends list is being edited
+            if (this.friendDetails.isFriendSelected) {
+              let data =
+              {
+                friendId: this.friendDetails.friendId,
+                message: `${this.userDetails.userName} has edited list on your list's`,
+                friendEmail: this.friendDetails.friendEmail,
+                friendName: this.friendDetails.friendName
+              }
+              this.socketService.notifyUpdates(data);
+            }
+
             this.toastr.success('list updated');
           }
         },
@@ -212,6 +280,18 @@ export class UserComponent implements OnInit {
       this.listService.deleteList(this.selectedList.listId, this.myauthToken).subscribe(
         (apiResponse) => {
           if (apiResponse['status'] === 200) {
+
+            //notify if friend list is being deleted
+            if (this.friendDetails.isFriendSelected) {
+              let data =
+              {
+                friendId: this.friendDetails.friendId,
+                message: `${this.userDetails.userName} has deleted a list on your list's`,
+                friendEmail: this.friendDetails.friendEmail,
+                friendName: this.friendDetails.friendName
+              }
+              this.socketService.notifyUpdates(data);
+            }
             setTimeout(() => {
               this.toastr.success('List deleted')
             }, 100)
@@ -241,6 +321,17 @@ export class UserComponent implements OnInit {
         .subscribe(
           (apiResponse) => {
             if (apiResponse['status'] === 200) {
+              //notify friend if friend item is deleted
+              if (this.friendDetails.isFriendSelected) {
+                let data =
+                {
+                  friendId: this.friendDetails.friendId,
+                  message: `${this.userDetails.userName} has deleted item on your list's`,
+                  friendEmail: this.friendDetails.friendEmail,
+                  friendName: this.friendDetails.friendName
+                }
+                this.socketService.notifyUpdates(data);
+              }
               this.toastr.success('item deleted');
               this.getSingleList(this.selectedList.listId)
               //empty selected item of list after deleting that item
@@ -269,6 +360,18 @@ export class UserComponent implements OnInit {
         (apiResponse) => {
           if (apiResponse['status'] === 200) {
             this.toastr.success('item edited');
+
+            //notify friend if friend item is edited
+            if (this.friendDetails.isFriendSelected) {
+              let data =
+              {
+                friendId: this.friendDetails.friendId,
+                message: `${this.userDetails.userName} has edited item on your list's`,
+                friendEmail: this.friendDetails.friendEmail,
+                friendName: this.friendDetails.friendName
+              }
+              this.socketService.notifyUpdates(data);
+            }
 
             // for refreshing the selected list
             this.getSingleList(this.selectedList.listId)
@@ -305,6 +408,18 @@ export class UserComponent implements OnInit {
           this.getSubItems(this.selectedList)
           console.log('subitem : ', this.subItemsOfItem)
           this.toastr.success('subitem added')
+
+          //notify if friends subitem is being added
+          if (this.friendDetails.isFriendSelected) {
+            let data =
+            {
+              friendId: this.friendDetails.friendId,
+              message: `${this.userDetails.userName} has added subItem on your list's`,
+              friendEmail: this.friendDetails.friendEmail,
+              friendName: this.friendDetails.friendName
+            }
+            this.socketService.notifyUpdates(data);
+          }
         }
       }
     )
@@ -318,28 +433,37 @@ export class UserComponent implements OnInit {
     console.log('item : ', item)
 
     //modifier will be the account user only,
-    let data=
+    let data =
     {
-      subItemId:subitem.subItemId,
-      modifierId:this.userDetails.userId,
-      authToken:this.myauthToken,
-      subItemTitle:this.editSubItemTitle,
-      itemId:item.itemId
+      subItemId: subitem.subItemId,
+      modifierId: this.userDetails.userId,
+      authToken: this.myauthToken,
+      subItemTitle: this.editSubItemTitle,
+      itemId: item.itemId
     }
-    console.log('data',data)
+    console.log('data', data)
 
     this.listService.editSubItem(data).subscribe(
-      (apiresponse)=>
-      {
-        console.log('apiresponse',apiresponse)
-        if(apiresponse['status']===200)
-        {
+      (apiresponse) => {
+        console.log('apiresponse', apiresponse)
+        if (apiresponse['status'] === 200) {
           this.getSubItems(this.selectedList)
           this.toastr.success('subitem edited');
+
+          //notify if friends subitem is being edited
+          if (this.friendDetails.isFriendSelected) {
+            let data =
+            {
+              friendId: this.friendDetails.friendId,
+              message: `${this.userDetails.userName} has edited subitem on your list's`,
+              friendEmail: this.friendDetails.friendEmail,
+              friendName: this.friendDetails.friendName
+            }
+            this.socketService.notifyUpdates(data);
+          }
         }
       },
-      (err)=>
-      {
+      (err) => {
         this.router.navigate(['/error/server'])
       }
     )
@@ -369,7 +493,19 @@ export class UserComponent implements OnInit {
             }
           });
 
-          this.toastr.success('subitem deleted')
+          this.toastr.success('subitem deleted');
+
+          //notify if friends subitem is being deleted
+          if (this.friendDetails.isFriendSelected) {
+            let data =
+            {
+              friendId: this.friendDetails.friendId,
+              message: `${this.userDetails.userName} has deleted subitem on your list's`,
+              friendEmail: this.friendDetails.friendEmail,
+              friendName: this.friendDetails.friendName
+            }
+            this.socketService.notifyUpdates(data);
+          }
         }
       },
       (err) => {
@@ -381,17 +517,16 @@ export class UserComponent implements OnInit {
   /** if iam currently on friend dashboard,than by clicking home button i will go to my dashboard by clearing 
   currently selected friend from local storage*/
 
-  public goBackFromFriendDashboard()
-  {
+  public goBackFromFriendDashboard() {
     console.log('inside')
     //reset friendinfo from local storage
     this.appService.deleteFriendInfo();
 
     let friendInfo =
     {
-      isFriendSelected:false,
-      friendId:'',
-      friendName:''
+      isFriendSelected: false,
+      friendId: '',
+      friendName: ''
     }
     this.appService.setFriendInfo(friendInfo)
 
@@ -400,74 +535,62 @@ export class UserComponent implements OnInit {
 
   }
 
-  public setSelectedSubItem(subitem)
-  {
-    this.currentSubItem=subitem;
+  public setSelectedSubItem(subitem) {
+    this.currentSubItem = subitem;
   }
 
   //marking item for done and undone
-  public markItem(item)
-  {
+  public markItem(item) {
     //console.log('item : ',item)
     let itemDone = !item.itemDone;
     let data =
     {
-      itemId:item.itemId,
-      isDone:itemDone,
-      authToken:this.myauthToken
+      itemId: item.itemId,
+      isDone: itemDone,
+      authToken: this.myauthToken
     }
 
     //console.log('data : ',data)
 
     this.listService.markItem(data).subscribe(
-      (apiresponse)=>
-      {
+      (apiresponse) => {
         console.log(this.selectedList.items)
         //this.getSingleList(this.selectedList.listId)
         //make change to selected list temporaily to reflect change in data
-        this.selectedList.items.map((singleItem)=>
-        {
-          if(singleItem.itemId === item.itemId)
-          {
+        this.selectedList.items.map((singleItem) => {
+          if (singleItem.itemId === item.itemId) {
             console.log('hey')
-            console.log('itemdone : ',itemDone)
-            singleItem.itemDone=itemDone
+            console.log('itemdone : ', itemDone)
+            singleItem.itemDone = itemDone
           }
         })
       },
-      (err)=>
-      {
+      (err) => {
         this.router.navigate(['/error/server'])
       }
     )
   }//end of marking item as done and undone
 
   //logging out
-  public logout()
-  {
+  public logout() {
     this.appService.signout(this.myauthToken).subscribe(
-      (apiresponse)=>
-      {
-        if(apiresponse['status']===200)
-        {
+      (apiresponse) => {
+        if (apiresponse['status'] === 200) {
           this.toastr.success('Logged Out');
           //delete local storages
           this.appService.deleteFriendInfo();
           this.appService.deleteUserInfo();
 
           //navigate to signin page
-          setTimeout(()=>
-          {
+          setTimeout(() => {
             this.router.navigate(['/'])
-          },1000)
+          }, 1000)
         }
-        else
-        {
+        else {
           this.toastr.warning(apiresponse['message'])
         }
       },
-      (err)=>
-      {
+      (err) => {
         this.router.navigate(['/error/server'])
       }
     )
