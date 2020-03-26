@@ -8,7 +8,7 @@
         <div class="col-md-4">
 
             <!-- if there is no friend request received then display this -->
-            <div *ngIf="myFriendRequests==0||myFriendRequests==null">
+            <div *ngIf="myFriendRequests.length==0||myFriendRequests==null">
                 <p class="text-justify text-danger">
                     Currently there is no friend requests for you
                 </p>
@@ -16,7 +16,7 @@
             <!-- end of div if no friend request is present -->
 
             <!-- if there is friend request available then display this -->
-            <div *ngIf="myFriendRequests>0">
+            <div *ngIf="myFriendRequests.length>0">
                 <h5 class="text-info"> You have a friend request</h5><br>
                 <div *ngFor="let request of myFriendRequests">
                     <ul class="list-group">

@@ -88,18 +88,22 @@ export class AllusersComponent implements OnInit {
 
   public addFriendStatus(allUsers) {
     allUsers.map((user) => {
-      console.log('length : ', this.friendRequestSent.length)
-      if (this.friendRequestSent.length > 0) {
-        for (let i = 0; i < this.friendRequestSent.length; i++) {
-          if (this.friendRequestSent[i].friendId === user.userId) {
-            user.status = 'requested';
-            break;
-          }
-          else {
-            user.status = 'not requested'
+      // console.log('length : ', this.friendRequestSent.length)
+      if(this.friendRequestSent)
+      {
+        if (this.friendRequestSent.length > 0) {
+          for (let i = 0; i < this.friendRequestSent.length; i++) {
+            if (this.friendRequestSent[i].friendId === user.userId) {
+              user.status = 'requested';
+              break;
+            }
+            else {
+              user.status = 'not requested'
+            }
           }
         }
       }
+     
       else {
         //if there is not a single friendrequest sent by users than set user status to not requested for all
         user.status = 'not requested'
