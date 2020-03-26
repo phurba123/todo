@@ -7,7 +7,7 @@ import { Message } from '@angular/compiler/src/i18n/i18n_ast';
   providedIn: 'root'
 })
 export class SocketService {
-  private baseUrl = "http://localhost:3000";
+  private baseUrl = "http://todolistbackend.phursang.xyz";
   public socket;
 
   constructor() {

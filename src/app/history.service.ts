@@ -5,7 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   providedIn: 'root'
 })
 export class HistoryService {
-  private baseUrl ="http://localhost:3000/api/v1/histories"
+  private baseUrl ="http://todolistbackend.phursang.xyz/api/v1/histories"
 
   constructor(
     private http:HttpClient

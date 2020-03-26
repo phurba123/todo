@@ -6,13 +6,13 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 })
 export class ListService {
   // backend url related to list
-  private listBackendUrl = 'http://localhost:3000/api/v1/list';
+  private listBackendUrl = 'http://todolistbackend.phursang.xyz/api/v1/list';
 
   // backend url related to item of list
-  private itemBaseUrl = 'http://localhost:3000/api/v1/list/item';
+  private itemBaseUrl = 'http://todolistbackend.phursang.xyz/api/v1/list/item';
 
   // backend url related to subitem
-  private subitemBaseUrl = 'http://localhost:3000/api/v1/list/item/subItem';
+  private subitemBaseUrl = 'http://todolistbackend.phursang.xyz/item/subItem';
 
   constructor(
     private http: HttpClient

@@ -35,8 +35,8 @@
                 </ul>
             </div>
 
-            <div *ngIf="!allUsers">
-                <p>There is currently no users to add friend...</p>
+            <div *ngIf="allUsers==0 || allUsers==null">
+                <p class="text-danger">There is currently no users to add friend...</p>
             </div>
         </div>
     </div>

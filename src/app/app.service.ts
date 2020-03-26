@@ -6,7 +6,7 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 })
 export class AppService {
 
-  private userBackendUrl = 'http://localhost:3000/api/v1/user'
+  private userBackendUrl = 'http://todolistbackend.phursang.xyz/api/v1/user'
 
   constructor(
     private http: HttpClient
