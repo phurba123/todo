@@ -12,7 +12,7 @@ export class ListService {
   private itemBaseUrl = 'http://todolistbackend.phursang.xyz/api/v1/list/item';
 
   // backend url related to subitem
-  private subitemBaseUrl = 'http://todolistbackend.phursang.xyz/item/subItem';
+  private subitemBaseUrl = 'http://todolistbackend.phursang.xyz/api/v1/list/item/subItem';
 
   constructor(
     private http: HttpClient
